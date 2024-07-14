@@ -90,7 +90,7 @@
                     placeholder="请输入途径点"
                     class="input-field"
                 />
-                <el-button type="danger" :icon="Delete" class="delBut"  size="small" circle/>
+                <el-button type="danger" :icon="Delete" class="delBut" size="small" circle/>
                 <el-button color="" type="text" icon="el-icon-close" @click="removeWaypoint(index)"/>
               </div>
 
@@ -156,7 +156,6 @@ const inputValue = ref(null) //使用el-input的expose
 const destination = ref('') // 目的地
 const waypoints = ref([]) // 途径点数
 const finalDestination = ref('')//终点
-
 
 
 // 配置搜索
@@ -227,15 +226,15 @@ const initMap = (mapInstance) => {
       //驾车策略，包括 LEAST_TIME，LEAST_FEE, LEAST_DISTANCE,REAL_TRAFFIC
       policy: AMap.DrivingPolicy.LEAST_TIME,
     };
-    let opts = {
-      waypoints: [
-        new AMap.LngLat(121.4957, 31.2304),
-        new AMap.LngLat(121.4890, 31.2204),
-      ]
-    }
+    // let opts = {
+    //   waypoints: [
+    //     new AMap.LngLat(121.4957, 31.2304),
+    //     new AMap.LngLat(121.4890, 31.2204),
+    //   ]
+    // }
     driving = new AMap.Driving(drivingOptions);
     //根据起终点坐标规划驾车路线
-    driving.search(new AMap.LngLat(121.4737, 31.2304), new AMap.LngLat(121.4853, 31.2222), opts);
+    // driving.search(new AMap.LngLat(121.4737, 31.2304), new AMap.LngLat(121.4853, 31.2222), opts);
   });
 
   //放大缩小
@@ -283,9 +282,23 @@ const removeWaypoint = (index) => {
   waypoints.value.splice(index, 1);
 }
 
-const submitNavigation = (way, origin, destination, opts) => {
-  way.search(origin, destination, opts)
-}
+const submitNavigation = async (way) => {
+  way = driving
+  let origin = await getLanAndLong(destination.value);
+  let opts = [];
+  for (const waypoint of waypoints.value) {
+    let pos = await getLanAndLong(waypoint);
+    opts.push(new AMap.LngLat(pos));
+  }
+  let target = await getLanAndLong(finalDestination.value);
+  way.search(origin, target, opts,(status,result)=>{
+    if(status === 'complement'){
+      console.log(result.info)
+      console.log(result.routes)
+    }
+  });
+};
+
 
 const createSearch = (type, panel) => {
   return new AMap.PlaceSearch({
@@ -366,7 +379,6 @@ const transport = async (lng, lat) => {
   initTab()
   map.setZoomAndCenter(zoom.value, selectPos.value);
 }
-
 
 
 //逆地址处理
