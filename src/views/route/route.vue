@@ -80,6 +80,28 @@
 
             <!-- 交通 -->
             <el-tab-pane name="traffic" label="交通">
+              <!-- 目的地输入框 -->
+              <el-input v-model="destination" placeholder="请输入目的地" class="input-field"/>
+
+              <!-- 途径点输入框 -->
+              <div v-for="(waypoint, index) in waypoints" :key="index" class="waypoint-row">
+                <el-input
+                    v-model="waypoints[index]"
+                    placeholder="请输入途径点"
+                    class="input-field"
+                />
+                <el-button type="danger" :icon="Delete" class="delBut"  size="small" circle/>
+                <el-button color="" type="text" icon="el-icon-close" @click="removeWaypoint(index)"/>
+              </div>
+
+              <!-- 添加途径点按钮 -->
+              <el-button type="text" icon="el-icon-plus" @click="addWaypoint">添加途径点</el-button>
+
+              <!-- 终点输入框 -->
+              <el-input v-model="finalDestination" placeholder="请输入终点" class="input-field"/>
+
+              <!-- 提交导航按钮 -->
+              <el-button type="primary" @click="submitNavigation">导航</el-button>
               <!-- 交通信息展示代码 -->
               <div id="navigation"></div>
             </el-tab-pane>
@@ -93,7 +115,6 @@
             <el-tab-pane name="scenic" label="景点">
               <div id="panel1"></div>
             </el-tab-pane>
-
 
             <!-- 美食 -->
             <el-tab-pane name="food" label="美食">
@@ -117,6 +138,7 @@ import {ElAmap} from "@vuemap/vue-amap";
 import RouteUtil from "@/util/routeUtil.js";
 import {initMapApi} from "@/util/map.js";
 import {attractionData} from "@/views/route/data.js";
+import {Delete,} from '@element-plus/icons-vue'
 
 // 地图属性
 const zoom = ref(16)
@@ -131,33 +153,11 @@ const chooseTab = ref('weather') //切换标签页,默认展示天气
 const selectPos = ref([]) //当前位置
 const keyword = ref(''); //搜索关键字
 const inputValue = ref(null) //使用el-input的expose
+const destination = ref('') // 目的地
+const waypoints = ref([]) // 途径点数
+const finalDestination = ref('')//终点
 
-// const location = ref({
-//   longitude: '',
-//   latitude: '',
-//   address: '',
-//   zone: [],
-// })
 
-// const geoCodeConfig = {
-//   'showButton': true,//是否显示定位按钮
-//   'position': 'LB',//定位按钮的位置
-//   /* LT LB RT RB */
-//   'offset': [10, 20],//定位按钮距离对应角落的距离
-//   'showMarker': true,//是否显示定位点
-//   'markerOptions': {//自定义定位点样式，同Marker的Options
-//     'content': '<img src="https://a.amap.com/jsapi_demos/static/resource/img/user.png" style="width:36px;height:36px"/>'
-//   },
-//   'showCircle': true,//是否显示定位精度圈
-//   'circleOptions': {//定位精度圈的样式
-//     'strokeColor': '#0093FF',
-//     'noSelect': true,
-//     'strokeOpacity': 0.5,
-//     'strokeWeight': 1,
-//     'fillColor': '#02B0FF',
-//     'fillOpacity': 0.25
-//   }
-// }
 
 // 配置搜索
 const defaultOptions = {
@@ -192,6 +192,7 @@ const nav = ref(false) // 设置导航
 const switchNav = () => {
   nav.value = !nav.value;
 }
+
 // 获得地图变量使用插件
 const initMap = (mapInstance) => {
   map = mapInstance;
@@ -234,7 +235,7 @@ const initMap = (mapInstance) => {
     }
     driving = new AMap.Driving(drivingOptions);
     //根据起终点坐标规划驾车路线
-    driving.search(new AMap.LngLat(121.4737, 31.2304), new AMap.LngLat(121.4853, 31.2222),opts);
+    driving.search(new AMap.LngLat(121.4737, 31.2304), new AMap.LngLat(121.4853, 31.2222), opts);
   });
 
   //放大缩小
@@ -272,9 +273,18 @@ const showMap = (lng, lat) => {
   chooseTab.value = "weather"
 }
 
-const navigation = (way,origin, destination, opts)=>{
-  
-  way.search(origin, destination,opts)
+// 添加途径点输入框
+const addWaypoint = () => {
+  waypoints.value.push('');
+}
+
+// 移除途径点输入框
+const removeWaypoint = (index) => {
+  waypoints.value.splice(index, 1);
+}
+
+const submitNavigation = (way, origin, destination, opts) => {
+  way.search(origin, destination, opts)
 }
 
 const createSearch = (type, panel) => {
@@ -357,6 +367,32 @@ const transport = async (lng, lat) => {
   map.setZoomAndCenter(zoom.value, selectPos.value);
 }
 
+
+
+//逆地址处理
+const getLanAndLong = async posName => {
+
+  return new Promise((resolve, reject) => {
+    // 使用geocoder的getLocation方法获取位置信息
+    geocoder.getLocation(posName, (status, result) => {
+      // 检查状态是否为complete并且信息是否为OK
+      if (status === "complete" && result.info === "OK") {
+        // 获取位置信息
+        let pos = result.geocodes[0].location;
+        // 解构经纬度
+        let {lng, lat} = pos;
+        // 如果成功，解析成功，则使用resolve来解决Promise
+        resolve([lng, lat]);
+      } else {
+        // 如果发生错误或者没有找到结果，则使用reject来拒绝Promise
+        reject(new Error('Failed to get location for posName: ' + posName));
+      }
+    });
+
+  })
+
+
+};
 // 根据经纬度获得地址和省市区街区
 // async function getGeo(lng, lat) {
 //   return new Promise((resolve, reject) => {
@@ -381,49 +417,49 @@ const transport = async (lng, lat) => {
 //     });
 //   });
 // }
-
-//逆地址处理
-const getLanAndLong = async posName => {
-
-  return new Promise((resolve, reject) => {
-    // 使用geocoder的getLocation方法获取位置信息
-    geocoder.getLocation(posName, (status, result) => {
-      // 检查状态是否为complete并且信息是否为OK
-      if (status === "complete" && result.info === "OK") {
-        // 获取位置信息
-        let pos = result.geocodes[0].location;
-        // 解构经纬度
-        let {lng, lat} = pos;
-        // 如果成功，解析成功，则使用resolve来解决Promise
-        resolve([lng, lat]);
-      } else {
-        // 如果发生错误或者没有找到结果，则使用reject来拒绝Promise
-        reject(new Error('Failed to get location for posName: ' + posName));
-      }
-    });
-
-  })
-  // try {
-  //   // 使用geocoder的getLocation方法获取位置信息
-  //   const result = await geocoder.getLocation(posName);
-  //   // 检查状态是否为complete并且信息是否为OK
-  //   if (result.status === "complete" && result.info === "OK") {
-  //     // 获取位置信息
-  //     const pos = result.geocodes[0].location;
-  //     // 解构经纬度
-  //     const {lng, lat} = pos;
-  //     // 返回经纬度数组
-  //     return [lng, lat];
-  //   } else {
-  //     throw new Error('Failed to get location for posName: ' + posName);
-  //   }
-  // } catch (error) {
-  //   // 如果发生错误，抛出错误
-  //   throw error;
-  // }
-};
-
-
+// const location = ref({
+//   longitude: '',
+//   latitude: '',
+//   address: '',
+//   zone: [],
+// })
+// const geoCodeConfig = {
+//   'showButton': true,//是否显示定位按钮
+//   'position': 'LB',//定位按钮的位置
+//   /* LT LB RT RB */
+//   'offset': [10, 20],//定位按钮距离对应角落的距离
+//   'showMarker': true,//是否显示定位点
+//   'markerOptions': {//自定义定位点样式，同Marker的Options
+//     'content': '<img src="https://a.amap.com/jsapi_demos/static/resource/img/user.png" style="width:36px;height:36px"/>'
+//   },
+//   'showCircle': true,//是否显示定位精度圈
+//   'circleOptions': {//定位精度圈的样式
+//     'strokeColor': '#0093FF',
+//     'noSelect': true,
+//     'strokeOpacity': 0.5,
+//     'strokeWeight': 1,
+//     'fillColor': '#02B0FF',
+//     'fillOpacity': 0.25
+//   }
+// }
+// try {
+//   // 使用geocoder的getLocation方法获取位置信息
+//   const result = await geocoder.getLocation(posName);
+//   // 检查状态是否为complete并且信息是否为OK
+//   if (result.status === "complete" && result.info === "OK") {
+//     // 获取位置信息
+//     const pos = result.geocodes[0].location;
+//     // 解构经纬度
+//     const {lng, lat} = pos;
+//     // 返回经纬度数组
+//     return [lng, lat];
+//   } else {
+//     throw new Error('Failed to get location for posName: ' + posName);
+//   }
+// } catch (error) {
+//   // 如果发生错误，抛出错误
+//   throw error;
+// }
 //
 // // 如果有候选词列表
 // let suggestions = ''
@@ -507,6 +543,34 @@ onBeforeMount(() => {
   top: 10px;
   right: 10px;
   width: 400px;
+}
+
+.route-input-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.input-field {
+  margin-bottom: 10px;
+}
+
+.waypoint-row {
+  display: flex;
+  align-items: center;
+}
+
+.waypoint-row .el-input {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.el-button--text {
+  padding: 0;
+}
+
+.delBut {
+  transform: scale(0.85) translateY(-10px);
 }
 
 </style>
