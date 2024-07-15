@@ -7,7 +7,6 @@
         <p>探索世界，从这里开始</p>
         <p>让每一步都充满惊喜，我们带您走遍全球</p>
         <p>在这里，每一处风景都能触动你的心弦</p>
-
       </div>
 
       <div class="one-fourth">
@@ -49,7 +48,6 @@
     </div>
     <!--footer wrap -->
   </footer>
-  <!--end footer -->
 
 </template>
 
@@ -58,6 +56,5 @@
 
 <style scoped>
 @import "@/assets/styles/css/style.css";
-@import "@/assets/styles/css/responsive.css";
 </style>
 

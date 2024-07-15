@@ -1,6 +1,6 @@
 <template>
   <el-tabs
-      style="height: 200px;
+      style="height: 50px;
       display: flex;
       justify-content: center;"
       @tab-click="handleClick"
@@ -11,11 +11,10 @@
     <el-tab-pane label="路线" name="route"></el-tab-pane>
     <el-tab-pane label="我的订单" name="order"></el-tab-pane>
   </el-tabs>
-<!--  <slide/>-->
+  <!--  <slide/>-->
 </template>
 
 <script setup>
-import Slide from "@/layout/components/slide.vue";
 import router from "@/router/index.js";
 
 const handleClick = (pane) => {
