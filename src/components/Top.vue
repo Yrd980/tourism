@@ -3,7 +3,7 @@
       style="height: 200px;
       display: flex;
       justify-content: center;"
-      @tab-click="handleClick()"
+      @tab-click="handleClick"
   >
     <el-tab-pane label="首页" name="home"></el-tab-pane>
     <el-tab-pane label="景点" name="scenic"></el-tab-pane>
@@ -11,15 +11,22 @@
     <el-tab-pane label="路线" name="route"></el-tab-pane>
     <el-tab-pane label="我的订单" name="order"></el-tab-pane>
   </el-tabs>
-  <slide/>
+<!--  <slide/>-->
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Slide from "@/layout/components/slide.vue";
+import router from "@/router/index.js";
 
-const handleClick = ()=>{
-  console.log(this)
+const handleClick = (pane) => {
+  let tabName = pane.props.name
+  // 根据选中的标签页名称跳转到对应的路由
+  router.push({
+    name: tabName
+  });
+  console.log(tabName)
 }
+
 </script>
 
 <style scoped>

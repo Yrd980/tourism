@@ -1,4 +1,5 @@
 <template>
+  <Top/>
   <div class="main-container">
     <div class="attraction-list">
       <div class="attraction-item" v-for="attraction in attractions" :key="attraction.id">
@@ -130,6 +131,7 @@
       </div>
     </el-dialog>
   </div>
+  <Footer/>
 </template>
 
 <script setup lang="js">
@@ -139,6 +141,8 @@ import RouteUtil from "@/util/routeUtil.js";
 import {initMapApi} from "@/util/map.js";
 import {attractionData} from "@/views/route/data.js";
 import {Delete,} from '@element-plus/icons-vue'
+import Top from "@/components/Top.vue";
+import Footer from "@/components/Footer.vue";
 
 // 地图属性
 const zoom = ref(16)
@@ -405,6 +409,7 @@ const getLanAndLong = async posName => {
 
 
 };
+
 // 根据经纬度获得地址和省市区街区
 // async function getGeo(lng, lat) {
 //   return new Promise((resolve, reject) => {

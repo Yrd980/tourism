@@ -1,5 +1,6 @@
 <template>
   <Top/>
+  home
   <Footer/>
 </template>
 
