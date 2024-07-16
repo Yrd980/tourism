@@ -1853,6 +1853,8 @@ img.left {
 
 .box-card {
     transition: 0.3s;
+    width: 100%;
+    min-width: 220px;
     margin: 5% 0;
 }
 

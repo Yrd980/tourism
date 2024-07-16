@@ -18,9 +18,49 @@
         <div class="container">
           <div class="left-side">
             <!-- 左边内容 -->
-            <span>{{ scenic.name }}</span>
+            <h2>{{ scenic.name }}</h2>
+            <el-card v-for="(item, index) in scenic.images" :key="index" class="box-card">
+              <img :src="item" class="card-image" alt="Image">
+              <div style="padding: 12px;">
+                <div class="card-description">{{ item.description }}</div>
+              </div>
+            </el-card>
             <div>{{ scenic.description }}</div>
-
+            <div class="reviews">
+              <!-- 使用el-scrollbar实现点评列表滚动 -->
+              <el-scrollbar style="margin-top: 40px" height="800px">
+                <!-- 遍历并显示可见的点评列表 -->
+                <div v-for="review in reviewList" :key="review.id" class="scrollbar-demo-item01">
+                  <div class="review-head">
+                    <div class="review-head-left">
+                      <!-- 显示点评用户头像 -->
+                      <img :src="review.avatar" class="visitor-image" alt="visitor image"/>
+                      <!-- 显示点评用户名称 -->
+                      <h3>{{ review.guest_name }}</h3>
+                    </div>
+                    <div class="review-head-right">
+                      <!-- 显示点评评分，并根据评分设置颜色 -->
+                      <p><strong>评分:</strong>
+                        <span class="rating" :style="{ color: ratingColor(review.rating) }">
+                                                {{ review.rating }}
+                                                </span>
+                        / 100
+                      </p>
+                    </div>
+                  </div>
+                  <div class="review-content">
+                    <div class="review-card-left">
+                      <!-- 显示点评的时间 -->
+                      <p>{{ review.review_date }}</p>
+                    </div>
+                    <div class="review-card-right">
+                      <!-- 显示点评内容 -->
+                      {{ review.content }}
+                    </div>
+                  </div>
+                </div>
+              </el-scrollbar>
+            </div>
           </div>
           <div class="right-side">
             <div class="widget categories">
@@ -55,11 +95,11 @@
               </div>
               <div class="widget-content">
                 <div class="tabs">
-                  <ul class="tab-control">
-                    <li><a href="#tabs-1" id="tab-1-name">朱利尔</a></li>
-                  </ul>
-                  <div id="tabs-1" class="tab-content">
-                    <p id="tab-1-value">Morbic. Duis.</p>
+                  <div class="tab-item">
+                    <strong>用户名:</strong> {{ newestReview.guest_name }}
+                  </div>
+                  <div class="tab-item">
+                    <strong>点评内容:</strong> {{ newestReview.content }}
                   </div>
                 </div>
               </div>
@@ -137,24 +177,99 @@
 
 <script setup>
 import Top from "@/components/Top.vue";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
-import {attractionData} from "@/views/route/data.js";
 
 const activeName = ref('1')
 
 const route = useRoute() //使用钩子函数获取路由
 const scenic = ref({
   id: 1,
-  name: "东方明珠塔",
-  description: "东方明珠广播电视塔是上海的标志性文化景观之一，塔高约468米。",
-  image: "https://example.com/image/oriental_pearl_tower.jpg",
+  name: "",
+  description: "",
+  images: [],
   position: [121.4737, 31.2304], // 经度, 纬度
 })
 
+
+// 根据日期排序的函数
+const sortByDate = (a, b) => new Date(b.review_date) - new Date(a.review_date);
+
+// 计算属性，返回按日期排序的点评列表
+const sortedReviews = computed(() => {
+  return [...reviewList.value].sort(sortByDate);
+});
+
+// 获取最新的点评
+const newestReview = computed(() => {
+  return sortedReviews.value[0];
+});
+
+const reviewList = ref([
+  {
+    id: 1,
+    avatar: 'https://via.placeholder.com/150', // 示例头像URL
+    guest_name: '张三',
+    rating: 90,
+    review_date: '2023-12-01',
+    content: '这个地方风景优美，服务也非常好，下次还会再来。'
+  },
+  {
+    id: 2,
+    avatar: 'https://via.placeholder.com/150', // 示例头像URL
+    guest_name: '李四',
+    rating: 95,
+    review_date: '2023-11-20',
+    content: '非常棒的体验，强烈推荐给朋友们。'
+  },
+  {
+    id: 3,
+    avatar: 'https://via.placeholder.com/150', // 示例头像URL
+    guest_name: '王五',
+    rating: 85,
+    review_date: '2023-10-15',
+    content: '景色不错，但是人有点多，希望下次能更安静一些。'
+  },
+  {
+    id: 4,
+    avatar: 'https://via.placeholder.com/150', // 示例头像URL
+    guest_name: '赵六',
+    rating: 100,
+    review_date: '2023-09-10',
+    content: '完美的一次旅行，一切都超出了预期！'
+  },
+  // ... 可以添加更多点评
+]);
+
+
+const items = ref([
+  {
+    id: '1',
+    images: ['src/assets/images/home/image1_1.jpg', 'src/assets/images/home/image1_1.jpg'],
+    name: '武侯祠',
+    description: '此身抱薪，可付丹鼎，五十四年春秋昭炎汉长明。南征北伐，誓还旧都，二十四代王业不偏安一隅。'
+  },
+  {
+    id: '2',
+    images: 'src/assets/images/home/image2_1.jpg',
+    name: '文殊院',
+    description: '大片红墙，明星打卡地，感受都市里的寺庙祈福。'
+  },
+
+])
+
+// 评分颜色计算函数
+const ratingColor = (rating) => {
+  if (rating >= 90) return '#00FF00'; // 绿色
+  if (rating >= 60) return '#7FFF00'; // 黄绿色
+  if (rating >= 40) return '#FFFF00'; // 黄色
+  if (rating >= 20) return '#FFA500'; // 橙色
+  return '#FF0000'; // 红色
+};
+
 onMounted(() => {
   let index = route.params.id
-  scenic.value = attractionData[index]
+  scenic.value = items.value[index]
 })
 
 </script>
@@ -176,5 +291,104 @@ onMounted(() => {
 .right-side {
   flex: 0 0 22%; /* 占据宽度40%，剩余60%给左边的div */
   background-color: #ddd;
+}
+
+
+.left {
+  flex: 5;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.tab-item {
+  margin: 10px 3px;
+  text-align: left;
+}
+
+
+a {
+  display: block;
+  margin-bottom: 20px;
+}
+
+
+.slider-demo-block .demonstration + .cost {
+  flex: 0 0 70%;
+}
+
+:deep(.el-dialog) {
+  width: 480px;
+  background: rgba(255, 255, 255, 0.5);
+  z-index: 9999;
+}
+
+:deep(.el-overlay) {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(0.5px) !important;
+}
+
+.scrollbar-demo-item01 {
+  margin-top: 30px;
+  margin-left: 5px;
+  margin-right: 5px;
+  display: flex;
+  flex: 3;
+  flex-direction: column;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  height: 300px;
+  border-radius: 8px;
+  color: #000;
+}
+
+.review-head {
+  display: flex;
+  align-items: flex-start;
+}
+
+.review-head-left {
+  flex: 2;
+  padding-right: 15px;
+  padding-left: 20px;
+}
+
+.visitor-image {
+  max-width: 80px;
+  max-height: 80px;
+  object-fit: cover;
+  padding-top: 20px;
+}
+
+.review-head-right {
+  flex: 4;
+}
+
+.rating {
+  font-weight: bold;
+  color: #1890ff;
+  font-size: 30px;
+}
+
+.review-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.review-card-left {
+  padding-right: 15px;
+  padding-left: 20px;
+  flex: 2;
+}
+
+.review-card-right {
+  flex: 4;
+  padding-right: 20px;
+  word-wrap: break-word; /* 使单词在必要时换行 */
+  white-space: normal; /* 允许文本换行 */
+  overflow-wrap: break-word; /* 支持更现代的浏览器，允许在必要时换行 */
+  word-break: break-all; /* 强制在长词或 URL 中的任意位置换行 */
 }
 </style>

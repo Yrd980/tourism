@@ -31,12 +31,6 @@ export const constantRoutes = [
         hidden: true,
     },
     {
-        name: 'recommend',
-        path: '/recommend',
-        component: () => import('@/views/recommend'),
-        hidden: true,
-    },
-    {
        name: 'profile',
        path: '/profile',
        component: () =>import('@/views/profile/index'),
