@@ -37,6 +37,12 @@ export const constantRoutes = [
         hidden: true,
     },
     {
+       name: 'profile',
+       path: '/profile',
+       component: () =>import('@/views/profile/index'),
+       hidden: true
+    },
+    {
         name: 'route',
         path: '/route',
         component: () => import('@/views/route/route'),
