@@ -69,6 +69,14 @@
               </div>
               <!--newsletter -->
 
+              <div class="emergency">
+                <el-table :data="emergencyinfoListView" border :default-sort="{ prop: 'priority', order: 'descending' }"
+                          :header-cell-style="{backgroundColor: '#fdf6ec'}">
+                  <el-table-column prop="content" label="应急信息预警" width="200"></el-table-column>
+                  <el-table-column prop="priority" label="应急信息预警" width="200" v-id="false"></el-table-column>
+                </el-table>
+              </div>
+
               <div class="hr">
                 <hr/>
               </div>
@@ -131,12 +139,23 @@ import Top from "@/components/Top.vue";
 import Footer from "@/components/Footer.vue";
 import Slide from "@/layout/components/slide.vue";
 import useUserStore from '@/store/modules/user'
-import {reactive, ref} from 'vue'
-
+import {reactive, ref, toRefs} from 'vue'
+import {listEmergencyinfo} from "@/api/emergency/emergency.js";
+const emergencyinfoList = ref([]);
+const emergencyinfoListView = ref([]);
 const userStore = useUserStore();
 const size = ref('default')
 const labelPosition = ref('right')
-
+const loading = ref(true);  // 控制加载状态
+const total = ref(0);  // 总条目数
+const data = reactive({
+  form: {},
+  queryParams: {
+    pageNum: 1,
+    pageSize: 10,
+    content: null,
+  },
+});
 const sizeForm = reactive({
   name: '',
   region: '',
@@ -147,7 +166,7 @@ const sizeForm = reactive({
   resource: '',
   desc: '',
 })
-
+const { queryParams, form } = toRefs(data);
 const items = [
   {image: 'src/assets/images/uploads/1280x800/login-background.jpg', name: 'Name 1', description: 'Description 1'},
   {image: 'https://via.placeholder.com/150', name: 'Name 2', description: 'Description 2'},
@@ -164,6 +183,22 @@ function onSubmit() {
   console.log('submit!')
 }
 
+function getList() {
+  loading.value = true;  // 设置加载状态
+  listEmergencyinfo(queryParams.value).then(response => {
+    const currentTime = new Date();  // 获取当前时间的 Date 对象
+    emergencyinfoList.value = response.rows;
+    emergencyinfoListView.value = response.rows.filter(item => {
+      const validityTime = new Date(item.validity);  // 将 validity 转换为 Date 对象
+      return item.status === 1 && validityTime > currentTime;
+    });
+    total.value = response.total;
+    loading.value = false;
+  });
+}
+
+
+getList();
 </script>
 
 
@@ -179,5 +214,12 @@ function onSubmit() {
 .el-button {
   float: right;
   margin-right: 10px; /* 按钮之间的间距 */
+}
+
+.emergency {
+  width: 200px;
+  position: absolute;
+  top: 20px;
+  right: -220px;
 }
 </style>
