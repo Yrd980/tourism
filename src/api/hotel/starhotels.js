@@ -27,9 +27,7 @@ export function getStarhotel(id) {
 }
 // 新增星级酒店预订信息
 export function addStarhotelBookingMsg(data) {
-  return axios.get('/api/guest/starhotels/details/' + data.room_type_id,{
-    data: data
-  })
+  return axios.post('/api/guest/starhotels/details/' + data.room_type_id,data)
       .then(response => response.data)
       .catch(error => {
         console.error('查询星级酒店预订信息失败:', error);

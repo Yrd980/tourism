@@ -27,9 +27,7 @@ export function getNonstarhotel(id) {
 }
 // 新增非星级酒店预订信息
 export function addNonstarhotelBookingMsg(data) {
-  return axios.get('/api/guest/nonstarhotels/details/' + data.room_type_id,{
-    data: data
-  })
+  return axios.post('/api/guest/nonstarhotels/details/' + data.room_type_id,data)
       .then(response => response.data)
       .catch(error => {
         console.error('查询非星级酒店预订信息失败:', error);

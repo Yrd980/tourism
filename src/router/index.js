@@ -9,12 +9,12 @@ export const constantRoutes = [
     },
     {
         name: 'Login',
-        path: '/login',
+        path: '/guest/login',
         component: () => import('@/views/login'),
         hidden: true,
     },
     {
-        path: '/register',
+        path: '/guest/register',
         component: () => import('@/views/register'),
         hidden: true
     },
@@ -35,6 +35,12 @@ export const constantRoutes = [
         path: '/recommend',
         component: () => import('@/views/recommend'),
         hidden: true,
+    },
+    {
+       name: 'profile',
+       path: '/profile',
+       component: () =>import('@/views/profile/index'),
+       hidden: true
     },
     {
         name: 'route',

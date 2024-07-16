@@ -54,7 +54,7 @@
                                             <el-button type="warning" @click="handleBooking(room)">
                                                 <span class="booking">预订</span>
                                             </el-button>
-                                            <div>
+                                            <div class="dialogs">
                                                 <el-dialog class="myDialog"  v-model="dialogVisible"
                                                            title="预订房间" @close="handleDialogClose" >
                                                     <div>
@@ -69,7 +69,6 @@
                                                             </el-form-item>
                                                             <el-form-item label="住房时间" prop="time">
                                                                 <div class="block">
-                                                                    <span class="demonstration"></span>
                                                                     <el-date-picker v-model="clockBooking" type="daterange"
                                                                                     range-separator="To" start-placeholder="Start date"
                                                                                     end-placeholder="End date" :shortcuts="shortcuts"
@@ -85,7 +84,7 @@
                                                         </el-form>
                                                         <div slot="footer" class="dialog-footer">
                                                             <el-button @click="handleDialogClose">取消</el-button>
-                                                            <el-button type="primary" @click="submitBookingMsg" :disabled="!isPaymentSuccessful">>确定预订</el-button>
+                                                            <el-button type="primary" @click="submitBookingMsg" :disabled="!isPaymentSuccessful">确定预订</el-button>
                                                         </div>
                                                     </div>
                                                 </el-dialog>
@@ -260,10 +259,28 @@ function onRoomPriceChange() {
 
 // 处理预订操作的函数
 function handleBooking(room) {
-    selectedRoom.value = room;  // 设置选中的房间
-    dialogVisible.value = true;  // 显示预订弹窗
+    // 检查用户是否登录
+    if (isLoggedIn()) {
+        // 如果未登录，提示用户登录
+        showLoginPrompt();
+        return;
+    }else {
+        // 设置选中的房间
+        selectedRoom.value = room;
+        // 显示预订弹窗
+        dialogVisible.value = true;
+    }
 }
 
+// 模拟检查用户是否登录的函数
+function isLoggedIn() {
+    return userStore.id === -1;
+}
+
+// 模拟显示登录提示的函数
+function showLoginPrompt() {
+    proxy.$router.push({ name: 'Login' });
+}
 // 关闭预订弹窗的函数
 const handleDialogClose = () => {
     dialogVisible.value = false;
@@ -282,7 +299,7 @@ function submitBookingMsg() {
         totalPrice: totalPrice.value  // 总价
     };
     addNonstarhotelBookingMsg(bookingData).then(response => {  // 调用接口添加预订信息
-        proxy.$modal.msgSuccess("预订成功！");  // 弹出成功消息
+        ElMessage.success('预订成功'); // 弹出登录成功消息
     });
     // 延迟一秒刷新页面
     setTimeout(() => {
@@ -358,7 +375,9 @@ function onRoomTypeReviewChange(value01){
 }
 </script>
 <style scoped>
-
+.dialogs{
+    width: 50%;
+}
 .block{
     width: 50%;
 }
@@ -398,7 +417,12 @@ function onRoomTypeReviewChange(value01){
     height: 100px; /* 正方形的高度 */
     margin-bottom: 20px;
 }
-
+.money-image {
+    position: relative;
+    width: 160px; /* 正方形的宽度 */
+    height: 160px; /* 正方形的高度 */
+    margin-bottom: 20px;
+}
 a {
     display: block;
     margin-bottom: 20px;
@@ -406,7 +430,7 @@ a {
 .hotel-image {
     width: 60%;
     border-radius: 10px;
-    max-height: 400px;
+    max-height: 350px;
     object-fit: cover;
     margin-left: 30px;
     margin-bottom: 20px;
@@ -446,7 +470,7 @@ a {
     flex: 3;
     flex-direction: column;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    height: 300px;
+    height: 350px;
     margin: 5px;
     border-radius: 4px;
     background: #fff;
@@ -481,14 +505,14 @@ a {
 }
 .room-image {
     width: 50%;
-    border-radius: 10px;
-    max-height:240px;
+    border-radius: 20px;
+    max-height:250px;
     object-fit: cover;
     margin-left: 30px;
     padding-bottom: 10px;
 }
 :deep(.el-dialog){
-    width: 460px;
+    width: 480px;
     background: rgba(255,255,255,0.5) ;
     z-index: 9999;
 }

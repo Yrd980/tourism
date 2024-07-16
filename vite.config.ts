@@ -4,6 +4,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import {ElementPlusResolver} from 'unplugin-vue-components/resolvers'
 import path from 'path'
+// @ts-ignore
 import {VueAmapResolver} from "@vuemap/unplugin-resolver"
 
 // https://vitejs.dev/config/
@@ -39,12 +40,24 @@ export default defineConfig({
                 rewrite: (path) => path.replace(/^\/api/, ''),
                 secure: false,
             },
+            '/emer': {
+                target: 'http://localhost:9208/',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/emer/, ''),
+                secure: false,
+            },
             '/map': {
                 target: 'https://restapi.amap.com',
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/map/, ''),
                 secure: false,
             },
+            '/hotel': {
+                target: 'http://localhost:9206/',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/hotel/, ''),
+                secure: false,
+            }
         },
     },
 })

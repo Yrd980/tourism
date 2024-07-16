@@ -17,6 +17,7 @@
     "@vuemap/vue-amap": "^2.1.2",
     "@vuemap/vue-amap-extra": "^2.1.4",
     "@vuemap/vue-amap-loca": "^2.1.2",
+    "@vueuse/core": "^10.11.0",
     "axios": "^1.7.2",
     "element-plus": "^2.7.6",
     "file-saver": "^2.0.5",
@@ -30,7 +31,8 @@
     "unplugin-vue-components": "^0.27.2",
     "vue": "^3.4.29",
     "vue-router": "^4.4.0",
-    "vuex": "^4.1.0"
+    "vuex": "^4.1.0",
+    "vue-cropper": "1.1.1"
   },
   "devDependencies": {
     "@testing-library/vue": "^8.1.0",

@@ -1,12 +1,15 @@
-import { login, logout, getInfo } from '@/api/login'
+import { login1, logout, getInfo } from '@/api/login'
+import { computed } from 'vue';
 import defAva from '@/assets/images/profile.jpg'
 import { defineStore } from 'pinia'
-
+import { useStore } from 'vuex';
+// 访问存储的用户数据
+import store from '@/store';
 const useUserStore = defineStore(
   'user',
   {
     state: () => ({
-      id: '-1',
+      id: -1,
       name: '',
       avatar: '',
       roles: [],
@@ -14,22 +17,29 @@ const useUserStore = defineStore(
     }),
     actions: {
       // 登录
-      login(userInfo) {
+      async login(userInfo) {
         const username = userInfo.username.trim()
         const password = userInfo.password
-        const code = userInfo.code
+        const code = 5374
         const uuid = userInfo.uuid
-        return new Promise((resolve, reject) => {
-          login(username, password, code, uuid).then(res => {
-            let data = res.data
-            this.id = data.userId  // 假设登录后会返回用户ID
-            this.name = data.userName
-            this.avatar = (data.avatar == "" || data.avatar == null) ? defAva : data.avatar;
-            resolve()
-          }).catch(error => {
-            reject(error)
-          })
-        })
+        const userData = await login1(username, password);
+        this.id = userData.user_id;
+        this.name = userData.user_name;
+        this.avatar = (userData.avatar == "" || userData.avatar == null) ? defAva : userData.avatar;
+        return userData;
+
+        // return new Promise((resolve, reject) => {
+        //   login1(username, password).then(response => {
+        //     console.log(userData)
+        //     let data = response.data
+        //     this.id = data.userId
+        //     this.name = data.userName
+        //     this.avatar = (data.avatar == "" || data.avatar == null) ? defAva : data.avatar;
+        //     resolve()
+        //   }).catch(error => {
+        //     reject(error)
+        //   })
+        // })
       },
       // 获取用户信息
       getInfo() {
@@ -57,7 +67,7 @@ const useUserStore = defineStore(
       logOut() {
         return new Promise((resolve, reject) => {
           logout().then(() => {
-            this.id = '-1'  // 将id设置为未登录状态
+            this.id = -1  // 将id设置为未登录状态
             this.name = ''
             this.avatar = ''
             this.roles = []
