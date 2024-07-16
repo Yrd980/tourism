@@ -301,8 +301,8 @@ const submitNavigation = async (way) => {
     opts.push(new AMap.LngLat(pos));
   }
   let target = await getLanAndLong(finalDestination.value);
-  way.search(origin, target, opts,(status,result)=>{
-    if(status === 'complement'){
+  way.search(origin, target, opts, (status, result) => {
+    if (status === 'complement') {
       console.log(result.info)
       console.log(result.routes)
     }
