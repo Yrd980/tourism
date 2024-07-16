@@ -39,6 +39,11 @@
                 <div style="padding: 12px;">
                   <span class="card-name">{{ item.name }}</span>
                   <div class="card-description">{{ item.description }}</div>
+                  <router-link
+                      :to="{ name: 'detail', params: { id: index }}"
+                  >
+                    查看详情
+                  </router-link>
                 </div>
               </el-card>
             </el-col>
@@ -58,11 +63,11 @@ import Top from "@/components/Top.vue";
 const searchInput = ref('')
 
 const items = [
-  {image: 'src/assets/images/uploads/1280x800/login-background.jpg', name: 'Name 1', description: 'Description 1'},
-  {image: 'https://via.placeholder.com/150', name: 'Name 2', description: 'Description 2'},
-  {image: 'https://via.placeholder.com/150', name: 'Name 3', description: 'Description 3'},
-  {image: 'https://via.placeholder.com/150', name: 'Name 4', description: 'Description 4'},
-  {image: 'https://via.placeholder.com/150', name: 'Name 5', description: 'Description 5'},
+  {image: 'src/assets/images/uploads/1280x800/login-background.jpg',id:1, name: 'Name 1', description: 'Description 1'},
+  {image: 'https://via.placeholder.com/150', id:2,name: 'Name 2', description: 'Description 2'},
+  {image: 'https://via.placeholder.com/150',id:3, name: 'Name 3', description: 'Description 3'},
+  {image: 'https://via.placeholder.com/150', id:3,name: 'Name 4', description: 'Description 4'},
+  {image: 'https://via.placeholder.com/150', id:3,name: 'Name 5', description: 'Description 5'},
   {image: 'https://via.placeholder.com/150', name: 'Name 6', description: 'Description 6'},
   {image: 'https://via.placeholder.com/150', name: 'Name 7', description: 'Description 7'},
   {image: 'https://via.placeholder.com/150', name: 'Name 8', description: 'Description 8'},

@@ -1,6 +1,12 @@
 <template>
   <Top/>
   <div class="main-container">
+    <div class="subheader">
+      <div class="left">
+        <span class="page-title">旅游路线</span>
+        <span class="page-desc">路线</span>
+      </div>
+    </div>
     <div class="attraction-list">
       <div class="attraction-item" v-for="attraction in attractions" :key="attraction.id">
         <img :src="attraction.image" alt="Attraction Image"/>
@@ -500,6 +506,8 @@ onBeforeMount(() => {
 </script>
 
 <style scoped>
+@import "src/assets/styles/css/style.css";
+
 .main-container {
   display: flex;
   flex-direction: column;
