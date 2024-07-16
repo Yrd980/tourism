@@ -17,6 +17,7 @@
     "@vuemap/vue-amap": "^2.1.2",
     "@vuemap/vue-amap-extra": "^2.1.4",
     "@vuemap/vue-amap-loca": "^2.1.2",
+    "@vueuse/core": "^10.11.0",
     "axios": "^1.7.2",
     "element-plus": "^2.7.6",
     "file-saver": "^2.0.5",
