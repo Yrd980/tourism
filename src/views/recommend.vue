@@ -127,15 +127,12 @@
           </div>
         </div>
       </el-main>
-      <el-footer>
-        <Footer/>
-      </el-footer>
+      <Footer/>
     </el-container>
   </div>
 </template>
 
 <script setup lang="ts">
-
 import Top from "@/components/Top.vue";
 </script>
 

@@ -41,12 +41,10 @@
             </ul>
           </div>
         </div>
-        <!-- End of Flickr Badge -->
       </div>
 
       <br class="clear"/>
     </div>
-    <!--footer wrap -->
   </footer>
 
 </template>
