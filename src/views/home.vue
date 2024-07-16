@@ -8,66 +8,7 @@
         <slide style="margin-bottom: 40px"/>
         <div id="wrapper">
           <div id="container">
-            <section id="content">
-              <div class="two-third">
-                <div id="searchmodule" class="tabs">
-                  <div id="hotel-search" class="tab-content">
-                    <el-form
-                        style="max-width: 500px ; height: 154px"
-                        :model="sizeForm"
-                        label-width="auto"
-                        :label-position="labelPosition"
-                        :size="size"
-                    >
-                      <el-form-item label="酒店预订">
-                        <el-input style="width: 300px" v-model="sizeForm.name"/>
-                      </el-form-item>
-                      <el-form-item label="时间">
-                        <el-col :span="11">
-                          <el-date-picker
-                              v-model="sizeForm.date1"
-                              type="date"
-                              aria-label="Pick a date"
-                              placeholder="Pick a date"
-                              style="width: 100%"
-                          />
-                        </el-col>
-                      </el-form-item>
-                      <el-form-item label="时间">
-                        <el-col :span="11">
-                          <el-date-picker
-                              v-model="sizeForm.date2"
-                              type="data"
-                              aria-label="Pick a data"
-                              placeholder="Pick a data"
-                              style="width: 100%"
-                          />
-                        </el-col>
-                      </el-form-item>
-                      <el-form-item class="form_btn">
-                        <el-button style="float: right;" type="primary" @click="onSubmit">Create</el-button>
-                        <el-button style="float: right">Cancel</el-button>
-                      </el-form-item>
-                    </el-form>
-                  </div>
-
-                  <!--travel search -->
-                </div>
-              </div>
-              <!--searchmodule -->
-
-              <div class="one-third last">
-                <div id="newsletter" class="module">
-                  <div class="module-content">
-                    <div class="module-content-wrap">
-                      <a href="www.baidu.com">
-                        <img width="100%" height="auto"
-                             src="/src/assets/images/uploads/1280x800/moscow1.jpg"/></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!--newsletter -->
+            <div id="content" style="margin-bottom: 250px">
 
               <div class="hr">
                 <hr/>
@@ -101,7 +42,7 @@
                 <router-link style="float: right" to="/recommend">查看目的地</router-link>
               </div>
 
-              <div class="card-container" style="transform: translateX(-10px)">
+              <div class="card-container" style="transform: translateX(-10px) ; max-height: 600px">
                 <el-row :gutter="8">
                   <el-col v-for="(item, index) in items" :key="index" :span="6">
                     <el-card class="box-card">
@@ -115,8 +56,7 @@
                 </el-row>
               </div>
 
-              <br class="clear"/>
-            </section>
+            </div>
           </div>
         </div>
         <Footer/>
@@ -131,38 +71,50 @@ import Top from "@/components/Top.vue";
 import Footer from "@/components/Footer.vue";
 import Slide from "@/layout/components/slide.vue";
 import useUserStore from '@/store/modules/user'
-import {reactive, ref} from 'vue'
+import {ref} from 'vue'
 
 const userStore = useUserStore();
 const size = ref('default')
-const labelPosition = ref('right')
-
-const sizeForm = reactive({
-  name: '',
-  region: '',
-  date1: '',
-  date2: '',
-  delivery: false,
-  type: [],
-  resource: '',
-  desc: '',
-})
 
 const items = [
-  {image: 'src/assets/images/uploads/1280x800/login-background.jpg', name: 'Name 1', description: 'Description 1'},
-  {image: 'https://via.placeholder.com/150', name: 'Name 2', description: 'Description 2'},
-  {image: 'https://via.placeholder.com/150', name: 'Name 3', description: 'Description 3'},
-  {image: 'https://via.placeholder.com/150', name: 'Name 4', description: 'Description 4'},
-  {image: 'https://via.placeholder.com/150', name: 'Name 5', description: 'Description 5'},
-  {image: 'https://via.placeholder.com/150', name: 'Name 6', description: 'Description 6'},
-  {image: 'https://via.placeholder.com/150', name: 'Name 7', description: 'Description 7'},
-  {image: 'https://via.placeholder.com/150', name: 'Name 8', description: 'Description 8'},
+  {
+    image: 'src/assets/images/home/image1_1.jpg',
+    name: '武侯祠',
+    description: '此身抱薪，可付丹鼎，五十四年春秋昭炎汉长明。南征北伐，誓还旧都，二十四代王业不偏安一隅。'
+  },
+  {
+    image: 'src/assets/images/home/image2_1.jpg',
+    name: '文殊院',
+    description: '大片红墙，明星打卡地，感受都市里的寺庙祈福。'
+  },
+  {image: 'src/assets/images/home/image3_1.jpg', name: '杜甫草堂', description: '杜甫诗人的故居，清幽秀丽的诗意景象'},
+  {
+    image: 'src/assets/images/home/image4_1.jpg',
+    name: '东郊记忆',
+    description: '工业风建筑拍照嘎嘎出片，周末会有很多特色主题的集市。'
+  },
+  {
+    image: 'src/assets/images/home/image5_1.jpg',
+    name: '大熊猫基地',
+    description: '都来成都了真的不去大熊猫基地看看吗。'
+  },
+  {
+    image: 'src/assets/images/home/image6_1.jpg',
+    name: '都江堰',
+    description: '千年古堰，天府之源。晚上灯光映水，欣赏南桥夜景。'
+  },
+  {
+    image: 'src/assets/images/home/image7_1.jpg',
+    name: '青城山',
+    description: '拜水都江堰，问道青城山。青城山是西蜀第一山，是孙悟空拜师的取景地，还可以了解道教和太极的发源。'
+  },
+  {
+    image: 'src/assets/images/home/image8_1.jpg',
+    name: '三星堆',
+    description: '一场跨越时空的对话，亲身感受历史带来的震撼'
+  },
 
 ]
-
-function onSubmit() {
-  console.log('submit!')
-}
 
 </script>
 
@@ -170,14 +122,4 @@ function onSubmit() {
 <style scoped>
 @import "src/assets/styles/css/style.css";
 
-.form_btn {
-  display: flex;
-  justify-content: space-between; /* 按钮之间留有空间 */
-  align-items: center; /* 垂直居中对齐 */
-}
-
-.el-button {
-  float: right;
-  margin-right: 10px; /* 按钮之间的间距 */
-}
 </style>

@@ -34,15 +34,15 @@ export default defineConfig({
         proxy: {
             '/api': {
                 // target: 'https://restapi.amap.com',
-                target: 'http://localhost:9206/',
+                target: 'http://localhost:9215/',
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/api/, ''),
                 secure: false,
             },
             '/map': {
-                // target: 'https://restapi.amap.com',
+                target: 'https://restapi.amap.com',
                 changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, ''),
+                rewrite: (path) => path.replace(/^\/map/, ''),
                 secure: false,
             },
         },

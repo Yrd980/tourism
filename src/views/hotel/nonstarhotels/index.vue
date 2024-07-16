@@ -77,8 +77,8 @@
 </style>
 
 <script setup name="NonStarhotels">
-import { ref, reactive, toRefs, getCurrentInstance } from 'vue';
-import { listNonstarhotels, } from "@/api/hotel/nonstarhotels";
+import {getCurrentInstance, reactive, ref, toRefs} from 'vue';
+import {listNonstarhotels,} from "@/api/hotel/nonstarhotels";
 import Top from "@/components/Top.vue";
 
 const { proxy } = getCurrentInstance();

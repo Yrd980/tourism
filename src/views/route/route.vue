@@ -87,30 +87,34 @@
 
             <!-- 交通 -->
             <el-tab-pane name="traffic" label="交通">
-              <!-- 目的地输入框 -->
-              <el-input v-model="destination" placeholder="请输入目的地" class="input-field"/>
 
-              <!-- 途径点输入框 -->
-              <div v-for="(waypoint, index) in waypoints" :key="index" class="waypoint-row">
-                <el-input
-                    v-model="waypoints[index]"
-                    placeholder="请输入途径点"
-                    class="input-field"
-                />
-                <el-button type="danger" :icon="Delete" class="delBut" size="small" circle/>
-                <el-button color="" type="text" icon="el-icon-close" @click="removeWaypoint(index)"/>
-              </div>
-
-              <!-- 添加途径点按钮 -->
-              <el-button type="text" icon="el-icon-plus" @click="addWaypoint">添加途径点</el-button>
-
-              <!-- 终点输入框 -->
-              <el-input v-model="finalDestination" placeholder="请输入终点" class="input-field"/>
-
-              <!-- 提交导航按钮 -->
-              <el-button type="primary" @click="submitNavigation">导航</el-button>
+              <el-form :model="form" @submit.native.prevent="handleSubmit">
+                <el-form-item label="城市" prop="city">
+                  <el-input v-model="form.city" placeholder="请输入城市"></el-input>
+                </el-form-item>
+                <el-form-item label="起点" prop="start">
+                  <el-input v-model="form.start" placeholder="请输入起点"></el-input>
+                </el-form-item>
+                <el-form-item label="终点" prop="end">
+                  <el-input v-model="form.end" placeholder="请输入终点"></el-input>
+                </el-form-item>
+                <!--                <el-form-item label="途经点" prop="waypoints">-->
+                <!--                  <el-input v-model="waypointInput" placeholder="请输入途经点(可选)"></el-input>-->
+                <!--                  <el-button type="primary" @click="addWaypoint">添加</el-button>-->
+                <!--                  <ul>-->
+                <!--                    <li v-for="(point, index) in form.waypoints" :key="index">-->
+                <!--                      {{ point }}-->
+                <!--                      <el-button type="danger" @click="removeWaypoint(index)">删除</el-button>-->
+                <!--                    </li>-->
+                <!--                  </ul>-->
+                <!--                </el-form-item>-->
+                <el-form-item>
+                  <el-button type="primary" native-type="submit">搜索</el-button>
+                  <el-button type="danger" @click="switchNav">取消</el-button>
+                </el-form-item>
+              </el-form>
               <!-- 交通信息展示代码 -->
-              <div id="navigation"></div>
+              <div v-if="nav" id="navigation"></div>
             </el-tab-pane>
 
             <!-- 地址 -->
@@ -146,9 +150,9 @@ import {ElAmap} from "@vuemap/vue-amap";
 import RouteUtil from "@/util/routeUtil.js";
 import {initMapApi} from "@/util/map.js";
 import {attractionData} from "@/views/route/data.js";
-import {Delete,} from '@element-plus/icons-vue'
 import Top from "@/components/Top.vue";
 import Footer from "@/components/Footer.vue";
+import {ElMessage} from 'element-plus'
 
 // 地图属性
 const zoom = ref(16)
@@ -161,12 +165,17 @@ const currentWeather = ref({}) //当天天气
 const forecasts = ref() //预报天气
 const chooseTab = ref('weather') //切换标签页,默认展示天气
 const selectPos = ref([]) //当前位置
+const recoveryPos = ref([]) //存储先前的位置
 const keyword = ref(''); //搜索关键字
 const inputValue = ref(null) //使用el-input的expose
-const destination = ref('') // 目的地
-const waypoints = ref([]) // 途径点数
-const finalDestination = ref('')//终点
+const waypointInput = ref('')
 
+const form = ref({
+  city: '',
+  start: '',
+  end: '',
+  waypoints: []
+})
 
 // 配置搜索
 const defaultOptions = {
@@ -180,7 +189,6 @@ const defaultOptions = {
 let dialogKey = 0 //对话框刷新
 let map = null; //地图示例
 let poiInfo //搜索的信息
-let pos //逆地址得到的信息
 
 //以下为插件名
 let geocoder = null //位置
@@ -196,14 +204,24 @@ const switchClick = () => {
 const visible = ref(false) // 卫星图等展示
 const switchVisible = () => {
   visible.value = !visible.value;
+  transport(recoveryPos.value[0], recoveryPos.value[1])
 }
 const nav = ref(false) // 设置导航
 const switchNav = () => {
+  transport(recoveryPos.value[0], recoveryPos.value[1])
   nav.value = !nav.value;
+  form.value = {
+    city: '',
+    start: '',
+    end: '',
+    waypoints: []
+  }
 }
+
 
 // 获得地图变量使用插件
 const initMap = (mapInstance) => {
+
   map = mapInstance;
   //添加插件
   AMap.plugin('AMap.Geocoder', () => {
@@ -236,15 +254,9 @@ const initMap = (mapInstance) => {
       //驾车策略，包括 LEAST_TIME，LEAST_FEE, LEAST_DISTANCE,REAL_TRAFFIC
       policy: AMap.DrivingPolicy.LEAST_TIME,
     };
-    // let opts = {
-    //   waypoints: [
-    //     new AMap.LngLat(121.4957, 31.2304),
-    //     new AMap.LngLat(121.4890, 31.2204),
-    //   ]
-    // }
+
     driving = new AMap.Driving(drivingOptions);
     //根据起终点坐标规划驾车路线
-    // driving.search(new AMap.LngLat(121.4737, 31.2304), new AMap.LngLat(121.4853, 31.2222), opts);
   });
 
   //放大缩小
@@ -264,7 +276,6 @@ const initMap = (mapInstance) => {
     });
     map.addControl(navigation);
   })
-
   // transport(location.value.longitude, location.value.latitude)
   transport(selectPos.value[0], selectPos.value[1])
 };
@@ -275,6 +286,7 @@ const showMap = (lng, lat) => {
   dialogTableVisible.value = true
   //  方便初始化定位
   selectPos.value = [lng, lat]
+  recoveryPos.value = selectPos.value //初始化
   drawMarker(lng, lat)
   //关闭搜索
   inputValue.value.clear()
@@ -282,33 +294,78 @@ const showMap = (lng, lat) => {
   chooseTab.value = "weather"
 }
 
-// 添加途径点输入框
 const addWaypoint = () => {
-  waypoints.value.push('');
-}
-
-// 移除途径点输入框
-const removeWaypoint = (index) => {
-  waypoints.value.splice(index, 1);
-}
-
-const submitNavigation = async (way) => {
-  way = driving
-  let origin = await getLanAndLong(destination.value);
-  let opts = [];
-  for (const waypoint of waypoints.value) {
-    let pos = await getLanAndLong(waypoint);
-    opts.push(new AMap.LngLat(pos));
+  if (waypointInput.value) {
+    form.value.waypoints.push(waypointInput.value)
+    waypointInput.value = ''
+  } else {
+    ElMessage.error('请输入有效的途经点')
   }
-  let target = await getLanAndLong(finalDestination.value);
-  way.search(origin, target, opts, (status, result) => {
-    if (status === 'complement') {
-      console.log(result.info)
-      console.log(result.routes)
-    }
-  });
-};
+}
 
+const removeWaypoint = (index) => {
+  form.value.waypoints.splice(index, 1)
+}
+
+// 手册案例无法跑通
+const handleSubmit = () => {
+  const points = [
+    {keyword: form.value.start, city: form.value.city},
+    ...form.value.waypoints.map(waypoint => ({keyword: waypoint, city: form.value.city})),
+    {keyword: form.value.end, city: form.value.city}
+  ]
+
+  new AMap.Driving({
+    map: map,
+    panel: "navigation",
+    //驾车策略，包括 LEAST_TIME，LEAST_FEE, LEAST_DISTANCE,REAL_TRAFFIC
+    policy: AMap.DrivingPolicy.LEAST_TIME,
+  }).search(points, (status, result) => {
+    if (status === 'complete') {
+      ElMessage.success('路线规划成功')
+      console.log(result)
+    } else if (status === 'error') {
+      ElMessage.error(`错误: ${result}`)
+    } else if (status === 'no_data') {
+      ElMessage.warning('未找到相关数据')
+    }
+  })
+}
+
+// 导航
+// const handleSubmit = async () => {
+//
+//   let way = new AMap.Driving({
+//     map: map,
+//     panel: "navigation",
+//     //驾车策略，包括 LEAST_TIME，LEAST_FEE, LEAST_DISTANCE,REAL_TRAFFIC
+//     policy: AMap.DrivingPolicy.LEAST_TIME,
+//   })
+//
+//   const [origin, target] = await Promise.all([
+//     getLanAndLong(form.value.start),
+//     getLanAndLong(form.value.end)
+//   ]);
+//
+//   const opts = form.value.waypoints.length > 0
+//       ? await Promise.all(form.value.waypoints.map(waypoint => getLanAndLong(waypoint).then(pos => new AMap.LngLat(pos))))
+//       : [];
+//
+//   console.log(origin)
+//   console.log(target)
+//   console.log(opts)
+//
+//   way.search(origin, target, opts, (status, result) => {
+//     if (status === 'complete') {
+//       ElMessage.success('路线规划成功')
+//       console.log(result)
+//     } else if (status === 'error') {
+//       ElMessage.error(`错误: ${result}`)
+//     } else if (status === 'no_data') {
+//       ElMessage.warning('未找到相关数据')
+//     }
+//   });
+// };
 
 const createSearch = (type, panel) => {
   return new AMap.PlaceSearch({
@@ -358,11 +415,25 @@ const clickMap = async e => {
   });
   map.add(newMarker);
   markers.value.push(newMarker);
-
-  console.log(1)
-  const res = await getLanAndLong('长沙火车站')
-  console.log(res)
-  console.log(2)
+  // [{keyword: '四川大学', city: '成都市'}, {
+  //   keyword: '电子科技大学',
+  //   city: '成都市'
+  // }]
+  // driving.search(
+  //     [{keyword: '北京南站', city: '北京市'}, {keyword: '广东大厦', city: '北京市'}, {
+  //       keyword: '北京西站',
+  //       city: '北京市'
+  //     }]
+  //     , (status, result) => {
+  //       if (status === 'complete') {
+  //         ElMessage.success('路线规划成功')
+  //         console.log(result)
+  //       } else if (status === 'error') {
+  //         ElMessage.error(`错误: ${result}`)
+  //       } else if (status === 'no_data') {
+  //         ElMessage.warning('未找到相关数据')
+  //       }
+  //     })
 }
 
 // 绘制地点marker
@@ -378,6 +449,7 @@ const drawMarker = (longitude, latitude) => {
 // 跳转
 const transport = async (lng, lat) => {
   const res = await RouteUtil.getPosition(lng, lat)
+  recoveryPos.value = selectPos.value //便于还原
   selectPos.value = [lng, lat]
   const city = res.city
   const weatherData = await RouteUtil.getWeather(city);
@@ -415,6 +487,7 @@ const getLanAndLong = async posName => {
 
 
 };
+
 
 // 根据经纬度获得地址和省市区街区
 // async function getGeo(lng, lat) {

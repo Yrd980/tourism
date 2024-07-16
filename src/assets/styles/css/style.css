@@ -1847,7 +1847,7 @@ img.left {
     margin-top: 20px;
     margin-bottom: 20px;
     width: 960px;
-    height: 600px;
+    height: 700px;
     transform: translateX(250px);
 }
 
@@ -1872,6 +1872,11 @@ img.left {
 }
 
 .card-description {
+    /* 设置最小高度和最大高度 */
+    min-height: 130px;
+    max-height: 130px;
+    /* 当内容超出最大高度时显示滚动条 */
+    overflow: auto;
     color: #666;
     margin-top: 10px;
 }
