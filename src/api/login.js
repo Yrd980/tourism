@@ -2,12 +2,14 @@
 // 登录方法
 
 import axios from 'axios';
-
-export function login(username, password, code, uuid) {
-    return axios.post('/login', {
-        data: { username, password, code, uuid }
-    })
-        .then(response => response.data)
+import store from '@/store';
+export function login1(username, password) {
+    const data = { username, password };
+    return axios.post('/api/guest/login', data)
+        .then(response => {
+            console.log('响应数据:', response.data); // 打印响应数据
+            return response.data;
+        })
         .catch(error => {
             console.error('查询星级酒店列表失败:', error);
             throw error;
@@ -16,9 +18,7 @@ export function login(username, password, code, uuid) {
 
 // 注册方法
 export function register(data) {
-    return axios.post('/register', {
-        data: data
-    })
+    return axios.post('/api/guest/register', data)
         .then(response => response.data)
         .catch(error => {
             console.error('查询星级酒店列表失败:', error);

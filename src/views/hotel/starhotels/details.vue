@@ -77,7 +77,7 @@
                                             </el-button>
                                             <div>
                                                 <!-- 预订对话框 -->
-                                                <el-dialog class="myDialog" v-model="dialogVisible" title="预订房间" @close="handleDialogClose" >
+                                                <el-dialog class="myDialog" v-model="dialogVisible" title="预订房间" @close="handleDialogClose">
                                                     <div>
                                                         <!-- 显示选中的房间名称 -->
                                                         <p>房间名: {{selectedRoom.name}}</p>
@@ -301,28 +301,28 @@ function onRoomPriceChange() {
 
 // 处理预订操作的函数
 function handleBooking(room) {
+
     // 检查用户是否登录
-    if (!isLoggedIn()) {
+    if (isLoggedIn()) {
         // 如果未登录，提示用户登录
         showLoginPrompt();
         return;
+    }else {
+        // 设置选中的房间
+        selectedRoom.value = room;
+        // 显示预订弹窗
+        dialogVisible.value = true;
     }
-
-    // 设置选中的房间
-    selectedRoom.value = room;
-    // 显示预订弹窗
-    dialogVisible.value = true;
 }
 
 // 模拟检查用户是否登录的函数
 function isLoggedIn() {
-    return userStore.id !== -1;
+    return userStore.id === -1;
 }
 
 // 模拟显示登录提示的函数
 function showLoginPrompt() {
-
-    router.push({ name: 'Login' });
+    proxy.$router.push({ name: 'Login' });
 }
 
 // 关闭预订弹窗的函数
@@ -344,14 +344,14 @@ function submitBookingMsg() {
 };
 
     addStarhotelBookingMsg(bookingData).then(response => {  // 调用接口添加预订信息
-        proxy.$modal.msgSuccess("预订成功！");  // 弹出成功消息
+        ElMessage.success('预订成功'); // 弹出登录成功消息
     });
     // 延迟一秒刷新页面
     setTimeout(() => {
         location.reload();
         }, 1000);
         dialogVisible.value = false;  // 关闭预订弹窗
-}
+ }
 
 // 时间快捷方式选项
 const shortcuts = [
@@ -460,8 +460,8 @@ function onRoomTypeReviewChange(value01){
 }
 .money-image {
     position: relative;
-    width: 180px; /* 正方形的宽度 */
-    height: 180px; /* 正方形的高度 */
+    width: 160px; /* 正方形的宽度 */
+    height: 160px; /* 正方形的高度 */
     margin-bottom: 20px;
 }
 
@@ -546,14 +546,14 @@ a {
 }
 .room-image {
     width: 50%;
-    border-radius: 10px;
-    max-height:240px;
+    border-radius: 20px;
+    max-height:250px;
     object-fit: cover;
     margin-left: 30px;
     padding-bottom: 10px;
 }
 :deep(.el-dialog){
-    width: 460px;
+    width: 480px;
     background: rgba(255,255,255,0.5) ;
     z-index: 9999;
 }

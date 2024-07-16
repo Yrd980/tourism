@@ -9,12 +9,12 @@ export const constantRoutes = [
     },
     {
         name: 'Login',
-        path: '/login',
+        path: '/guest/login',
         component: () => import('@/views/login'),
         hidden: true,
     },
     {
-        path: '/register',
+        path: '/guest/register',
         component: () => import('@/views/register'),
         hidden: true
     },

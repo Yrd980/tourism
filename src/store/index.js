@@ -1,4 +1,4 @@
-import {createStore} from "vuex";
+import {createStore, mapState} from "vuex";
 
 const store = createStore({
     state: {
@@ -11,6 +11,7 @@ const store = createStore({
         isInMobile: false, // 是否是手机端
         isShowingMenuToggleBtn: false, // 是否显示移动端的菜单切换按钮
         authorization: null, // authorization
+        userData: null
     },
     getters: {
         isInPortraitMode: state => {
@@ -19,6 +20,7 @@ const store = createStore({
         isAdmin: state => {
             return state.authorization && state.authorization.group_id === 1;
         },
+        getUserData: state => state.userData,
     },
     mutations: {
         SET_AUTHORIZATION(state, value) {
@@ -38,7 +40,26 @@ const store = createStore({
         },
         SET_IS_SHOWING_MENU_TOGGLE_BTN(state, value) {
             state.isShowingMenuToggleBtn = value;
-        }
+        },
+        setUserData(state, userData) {
+            state.userData = userData;
+        },
+    },
+    actions: {
+        saveUserData({ commit }, userData) {
+            commit('setUserData', userData);
+        },
+    },
+    computed: {
+        ...mapState({
+            userId: state => state.user.userId,
+            username: state => state.user.userName,
+            password: state => state.user.password
+        })
+    },
+    created() {
+        // 访问 this.userId 来获取 userId
+        console.log('当前用户的 userId:', this.userId);
     }
 });
 

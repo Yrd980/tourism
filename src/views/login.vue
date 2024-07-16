@@ -1,12 +1,13 @@
 <template>
   <div class="login">
     <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
-      <h3 class="title">若依后台管理系统</h3>
+      <h3 class="title">游客服务系统</h3>
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
           type="text"
           size="large"
+          style="width: 92%"
           auto-complete="off"
           placeholder="账号"
         >
@@ -20,6 +21,7 @@
           size="large"
           auto-complete="off"
           placeholder="密码"
+          style="width: 92%"
           @keyup.enter="handleLogin"
         >
           <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
@@ -37,7 +39,7 @@
           <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
         </el-input>
         <div class="login-code">
-          <img :src="codeUrl" @click="getCode" class="login-code-img"/>
+          <img src="../assets/images/img.png"  class="login-code-img"/>
         </div>
       </el-form-item>
       <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
@@ -53,14 +55,10 @@
           <span v-else>登 录 中...</span>
         </el-button>
         <div style="float: right;" v-if="register">
-          <router-link class="link-type" :to="'/register'">立即注册</router-link>
+          <router-link class="link-type" :to="'/guest/register'">立即注册</router-link>
         </div>
       </el-form-item>
     </el-form>
-    <!--  底部  -->
-    <div class="el-login-footer">
-      <span>Copyright © 2018-2024 ruoyi.vip All Rights Reserved.</span>
-    </div>
   </div>
 </template>
 
@@ -68,7 +66,9 @@
 import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import useUserStore from '@/store/modules/user'
-
+import {useRoute, useRouter} from "vue-router";
+import { getCurrentInstance, ref, watch } from 'vue';
+import { ElMessage } from 'element-plus';
 const userStore = useUserStore()
 const route = useRoute();
 const router = useRouter();
@@ -116,35 +116,21 @@ function handleLogin() {
         Cookies.remove("rememberMe");
       }
       // 调用action的登录方法
+
       userStore.login(loginForm.value).then(() => {
-        const query = route.query;
-        const otherQueryParams = Object.keys(query).reduce((acc, cur) => {
-          if (cur !== "redirect") {
-            acc[cur] = query[cur];
-          }
-          return acc;
-        }, {});
-        router.push({ path: redirect.value || "/", query: otherQueryParams });
-      }).catch(() => {
-        loading.value = false;
-        // 重新获取验证码
-        if (captchaEnabled.value) {
-          getCode();
-        }
-      });
+          // 登录成功后的逻辑代码
+          ElMessage.success('登录成功'); // 弹出登录成功消息
+          // 延迟一秒刷新页面
+          setTimeout(() => {
+              // 将 hotelId 传递给路由，跳转到详情页面
+              proxy.$router.push(`/guest/starhotels`);
+          }, 1000);
+      })
     }
   });
 }
 
-function getCode() {
-  getCodeImg().then(res => {
-    captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled;
-    if (captchaEnabled.value) {
-      codeUrl.value = "data:image/gif;base64," + res.img;
-      loginForm.value.uuid = res.uuid;
-    }
-  });
-}
+
 
 function getCookie() {
   const username = Cookies.get("username");
@@ -157,18 +143,24 @@ function getCookie() {
   };
 }
 
-getCode();
 getCookie();
 </script>
 
 <style lang='scss' scoped>
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 .login {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  background-image: url("../assets/images/login-background.jpg");
-  background-size: cover;
+  height: 100vh;
+  width: 100vw;
+  background-image: url("../assets/images/backimage.jpg");
+  background-size: auto;
+  background-position: center;
 }
 .title {
   margin: 0px auto 30px auto;
@@ -179,6 +171,7 @@ getCookie();
 .login-form {
   border-radius: 6px;
   background: #ffffff;
+
   width: 400px;
   padding: 25px 25px 5px 25px;
   .el-input {
@@ -190,7 +183,6 @@ getCookie();
   .input-icon {
     height: 39px;
     width: 14px;
-    margin-left: 0px;
   }
 }
 .login-tip {
@@ -221,6 +213,7 @@ getCookie();
 }
 .login-code-img {
   height: 40px;
+  width: 100px;
   padding-left: 12px;
 }
 </style>
