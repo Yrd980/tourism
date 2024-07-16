@@ -28,7 +28,13 @@ export const constantRoutes = [
     {
         name: 'route',
         path: '/route',
-        component: () => import('@/views/route/route.vue'),
+        component: () => import('@/views/route/route'),
+        hidden: true,
+    },
+    {
+        name: 'detail',
+        path: '/detail/:id',
+        component: () => import('@/views/detail'),
         hidden: true,
     },
 ]
