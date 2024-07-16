@@ -51,6 +51,12 @@ export default defineConfig({
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/map/, ''),
                 secure: false,
+            },
+            '/hotel': {
+                target: 'http://localhost:9206/',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/hotel/, ''),
+                secure: false,
             }
         },
     },
