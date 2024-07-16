@@ -8,6 +8,17 @@ export const constantRoutes = [
         hidden: true,
     },
     {
+        name: 'Login',
+        path: '/login',
+        component: () => import('@/views/login'),
+        hidden: true,
+    },
+    {
+        path: '/register',
+        component: () => import('@/views/register'),
+        hidden: true
+    },
+    {
         name: 'scenic',
         path: '/scenic',
         component: () => import('@/views/scenic'),
@@ -30,6 +41,28 @@ export const constantRoutes = [
         path: '/route',
         component: () => import('@/views/route/route.vue'),
         hidden: true,
+    },
+    {
+        name: 'starHotel',
+        path: '/starhotels',
+        component: () => import('@/views/hotel/starhotels/index'),
+        hidden: true
+    },
+    {
+        name: 'nonStarHotel',
+        path: '/nonstarhotels',
+        component: () => import('@/views/hotel/nonstarhotels/index'),
+        hidden: true
+    },
+    {
+        path: '/starhotels/details/:hotelId',
+        component: () => import('@/views/hotel/starhotels/details'),
+        hidden: true
+    },
+    {
+        path: '/nonstarhotels/details/:hotelId',
+        component: () => import('@/views/hotel/nonstarhotels/details'),
+        hidden: true
     },
 ]
 

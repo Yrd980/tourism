@@ -25,14 +25,16 @@ export default defineConfig({
     resolve: {
         alias: {
             '~': path.resolve(__dirname, './'),
-            '@': path.resolve(__dirname, './src')
+            '@': path.resolve(__dirname, './src'),
+
         },
         extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
     },
     server: {
         proxy: {
             '/api': {
-                target: 'https://restapi.amap.com',
+                // target: 'https://restapi.amap.com',
+                target: 'http://localhost:9206/',
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/api/, ''),
                 secure: false,

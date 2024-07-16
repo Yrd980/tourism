@@ -124,7 +124,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup >
 
 import Footer from "@/components/Footer.vue";
 import Top from "@/components/Top.vue";

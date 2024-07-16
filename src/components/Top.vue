@@ -8,6 +8,8 @@
     <el-tab-pane label="首页" name="home"></el-tab-pane>
     <el-tab-pane label="景点" name="scenic"></el-tab-pane>
     <el-tab-pane label="景点推荐" name="recommend"></el-tab-pane>
+      <el-tab-pane label="星级酒店" name="starHotel"></el-tab-pane>
+      <el-tab-pane label="非星级酒店" name="nonStarHotel"></el-tab-pane>
     <el-tab-pane label="路线" name="route"></el-tab-pane>
     <el-tab-pane label="我的订单" name="order"></el-tab-pane>
   </el-tabs>

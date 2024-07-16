@@ -10,9 +10,14 @@ import store from './store'
 // 引入vue-amap
 import VueAMap from '@vuemap/vue-amap';
 import '@vuemap/vue-amap/dist/style.css';
-
+import { createPinia } from 'pinia'
+// 分页组件
+import Pagination from '@/components/Pagination'
 
 const app = createApp(App)
+const pinia = createPinia()
+
+app.component('Pagination', Pagination)
 
 app.use(ElementPlus, {
     locale: locale,
@@ -20,4 +25,5 @@ app.use(ElementPlus, {
 app.use(router)
 app.use(store)
 app.use(VueAMap)
+app.use(pinia)
 app.mount('#app')

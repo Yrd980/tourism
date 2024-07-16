@@ -130,9 +130,10 @@
 import Top from "@/components/Top.vue";
 import Footer from "@/components/Footer.vue";
 import Slide from "@/layout/components/slide.vue";
-
+import useUserStore from '@/store/modules/user'
 import {reactive, ref} from 'vue'
 
+const userStore = useUserStore();
 const size = ref('default')
 const labelPosition = ref('right')
 
