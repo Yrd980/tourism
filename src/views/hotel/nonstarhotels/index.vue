@@ -14,14 +14,6 @@
                             @keyup.enter="handleQuery"
                         />
                     </el-form-item>
-                    <el-form-item label="评分" prop="starLevel">
-                        <el-input
-                            v-model="queryParams.starLevel"
-                            placeholder="请输入酒店评分"
-                            clearable
-                            @keyup.enter="handleQuery"
-                        />
-                    </el-form-item>
                     <el-form-item label="地址" prop="address">
                         <el-input
                             v-model="queryParams.address"
