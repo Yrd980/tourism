@@ -153,7 +153,7 @@ function goToHotelDetail(hotelId) {
     // 检查 hotelId 是否有效
     if (hotelId !== undefined && hotelId !== null) {
         // 将 hotelId 转换为 Long 类型，或者直接发送给后端
-        proxy.$router.push(`/nonstarhotels/details/${hotelId}`);
+        proxy.$router.push(`/guest/nonstarhotels/details/${hotelId}`);
     } else {
         // 处理 hotelId 未定义的情况，可以给出提示或采取其他操作
         console.error('Hotel ID is undefined or null');

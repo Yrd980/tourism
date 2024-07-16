@@ -159,7 +159,7 @@ function goToHotelDetail(hotelId) {
     // 检查 hotelId 是否有效
     if (hotelId !== undefined && hotelId !== null) {
         // 将 hotelId 传递给路由，跳转到详情页面
-        proxy.$router.push(`/starhotels/details/${hotelId}`);
+        proxy.$router.push(`/guest/starhotels/details/${hotelId}`);
     } else {
         // 处理 hotelId 未定义的情况，可以给出提示或采取其他操作
         console.error('Hotel ID is undefined or null');

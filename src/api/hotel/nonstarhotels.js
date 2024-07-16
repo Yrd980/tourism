@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 export function listNonstarhotels(query) {
-  return axios.get('/api/nonstarhotels/list', {
+  return axios.get('/api/guest/nonstarhotels/list', {
     params: query
   })
       .then(response => {
@@ -18,7 +18,7 @@ export function listNonstarhotels(query) {
 
 // 查询非星级酒店信息详细
 export function getNonstarhotel(id) {
-  return axios.get('/api/nonstarhotels/details/' + id)
+  return axios.get('/api/guest/nonstarhotels/details/' + id)
       .then(response => response.data)
       .catch(error => {
         console.error('查询非星级酒店详细信息失败:', error);
@@ -27,7 +27,7 @@ export function getNonstarhotel(id) {
 }
 // 新增非星级酒店预订信息
 export function addNonstarhotelBookingMsg(data) {
-  return axios.get('/api/nonstarhotels/details/' + data.room_type_id,{
+  return axios.get('/api/guest/nonstarhotels/details/' + data.room_type_id,{
     data: data
   })
       .then(response => response.data)

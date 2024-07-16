@@ -44,23 +44,23 @@ export const constantRoutes = [
     },
     {
         name: 'starHotel',
-        path: '/starhotels',
+        path: '/guest/starhotels',
         component: () => import('@/views/hotel/starhotels/index'),
         hidden: true
     },
     {
         name: 'nonStarHotel',
-        path: '/nonstarhotels',
+        path: '/guest/nonstarhotels',
         component: () => import('@/views/hotel/nonstarhotels/index'),
         hidden: true
     },
     {
-        path: '/starhotels/details/:hotelId',
+        path: '/guest/starhotels/details/:hotelId',
         component: () => import('@/views/hotel/starhotels/details'),
         hidden: true
     },
     {
-        path: '/nonstarhotels/details/:hotelId',
+        path: '/guest/nonstarhotels/details/:hotelId',
         component: () => import('@/views/hotel/nonstarhotels/details'),
         hidden: true
     },

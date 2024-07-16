@@ -139,14 +139,12 @@
 </template>
 
 <script setup>
-import {ref, onMounted, getCurrentInstance} from 'vue';
+import {ref, onMounted, getCurrentInstance, computed, watch} from 'vue';
 import { useRoute } from 'vue-router';
 import {getNonstarhotel, addNonstarhotelBookingMsg} from '@/api/hotel/nonstarhotels';
 import useUserStore from '@/store/modules/user'
 
-
 const { proxy } = getCurrentInstance();  // 获取当前组件实例的代理对象
-
 // 获取用户存储实例
 const userStore = useUserStore();  // 使用用户存储实例
 

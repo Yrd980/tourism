@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 export function listStarhotels(query) {
-  return axios.get('/api/starhotels/list', {
+  return axios.get('/api/guest/starhotels/list', {
     params: query
   })
       .then(response => {
@@ -18,7 +18,7 @@ export function listStarhotels(query) {
 
 // 查询星级酒店信息详细
 export function getStarhotel(id) {
-  return axios.get('/api/starhotels/details/' + id)
+  return axios.get('/api/guest/starhotels/details/' + id)
       .then(response => response.data)
       .catch(error => {
         console.error('查询星级酒店详细信息失败:', error);
@@ -27,7 +27,7 @@ export function getStarhotel(id) {
 }
 // 新增星级酒店预订信息
 export function addStarhotelBookingMsg(data) {
-  return axios.get('/api/starhotels/details/' + data.room_type_id,{
+  return axios.get('/api/guest/starhotels/details/' + data.room_type_id,{
     data: data
   })
       .then(response => response.data)
