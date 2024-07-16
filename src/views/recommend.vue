@@ -9,7 +9,7 @@
           <div id="container">
             <div class="subheader">
               <div class="left">
-                <span class="page-title">景点浏览</span>
+                <span class="page-title">景点推荐</span>
                 <span class="page-desc">网罗天下美景，助您直达完美之旅。</span>
               </div>
             </div>

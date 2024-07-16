@@ -45,7 +45,9 @@ function getGeolocation() {
 }
 
 const keyService = mapConfig.key_service
-const url = `/api/v3/geocode/regeo` //防止跨域
+
+//地图
+const url = `/map/v3/geocode/regeo` //防止跨域
 
 async function getPosition(lng, lat) {
     const location = `${lng},${lat}`;
