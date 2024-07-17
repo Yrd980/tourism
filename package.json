@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
+    "@element-plus/icons": "^0.0.11",
     "@element-plus/icons-vue": "^2.3.1",
     "@types/node": "^20.14.10",
     "@vuemap/unplugin-resolver": "^2.0.0",
@@ -30,9 +31,9 @@
     "unplugin-auto-import": "^0.17.6",
     "unplugin-vue-components": "^0.27.2",
     "vue": "^3.4.29",
+    "vue-cropper": "1.1.1",
     "vue-router": "^4.4.0",
-    "vuex": "^4.1.0",
-    "vue-cropper": "1.1.1"
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@testing-library/vue": "^8.1.0",

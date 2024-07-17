@@ -1,69 +1,84 @@
-<template>
-  <div class="login">
-    <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
+<template >
+  <div class="login" >
+      <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
       <h3 class="title">游客服务系统</h3>
       <el-form-item prop="username">
-        <el-input
-          v-model="loginForm.username"
-          type="text"
-          size="large"
-          style="width: 92%"
-          auto-complete="off"
-          placeholder="账号"
-        >
-          <template #prefix><svg-icon icon-class="user" class="el-input__icon input-icon" /></template>
-        </el-input>
+
+          <el-input
+              v-model="loginForm.username"
+              type="text"
+              size="large"
+              style="width: 92%"
+              auto-complete="off"
+              placeholder="账号"
+          >
+              <template #prefix>
+                  <div class="input-icon-wrapper">
+                      <el-icon class="custom-icon"><User /></el-icon>
+                      <div class="icon-divider"></div>
+                  </div>
+              </template>
+          </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input
-          v-model="loginForm.password"
-          type="password"
-          size="large"
-          auto-complete="off"
-          placeholder="密码"
-          style="width: 92%"
-          @keyup.enter="handleLogin"
-        >
-          <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
-        </el-input>
+          <el-input
+              v-model="loginForm.password"
+              type="password"
+              size="large"
+              auto-complete="off"
+              placeholder="密码"
+              style="width: 92%"
+              @keyup.enter="handleLogin"
+          >
+              <template #prefix>
+                  <div class="input-icon-wrapper">
+                      <el-icon class="custom-icon"><Lock /></el-icon>
+                      <div class="icon-divider"></div>
+                  </div>
+              </template>
+          </el-input>
       </el-form-item>
       <el-form-item prop="code" v-if="captchaEnabled">
-        <el-input
-          v-model="loginForm.code"
-          size="large"
-          auto-complete="off"
-          placeholder="验证码"
-          style="width: 63%"
-          @keyup.enter="handleLogin"
-        >
-          <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
-        </el-input>
-        <div class="login-code">
-          <img src="../assets/images/img.png"  class="login-code-img"/>
-        </div>
+          <el-input
+              v-model="loginForm.code"
+              size="large"
+              auto-complete="off"
+              placeholder="验证码"
+              style="width: 63%"
+              @keyup.enter="handleLogin"
+          >
+              <template #prefix>
+                  <div class="input-icon-wrapper">
+                      <el-icon class="custom-icon"><CollectionTag /></el-icon>
+                      <div class="icon-divider"></div>
+                  </div>
+              </template>
+          </el-input>
+          <div class="login-code">
+              <img src="../assets/images/codeimg.png" class="login-code-img"/>
+          </div>
       </el-form-item>
       <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
       <el-form-item style="width:100%;">
-        <el-button
-          :loading="loading"
-          size="large"
-          type="primary"
-          style="width:100%;"
-          @click.prevent="handleLogin"
-        >
-          <span v-if="!loading">登 录</span>
-          <span v-else>登 录 中...</span>
-        </el-button>
-        <div style="float: right;" v-if="register">
-          <router-link class="link-type" :to="'/guest/register'">立即注册</router-link>
-        </div>
+          <el-button
+              :loading="loading"
+              size="large"
+              type="primary"
+              style="width:100%;"
+              @click.prevent="handleLogin"
+          >
+              <span v-if="!loading">登 录</span>
+              <span v-else>登 录 中...</span>
+          </el-button>
+          <div style="float: right;" v-if="register">
+              <router-link class="link-type" :to="'/guest/register'">立即注册</router-link>
+          </div>
       </el-form-item>
-    </el-form>
+  </el-form>
   </div>
 </template>
 
 <script setup>
-import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import useUserStore from '@/store/modules/user'
 import {useRoute, useRouter} from "vue-router";
@@ -88,7 +103,6 @@ const loginRules = {
   code: [{ required: true, trigger: "change", message: "请输入验证码" }]
 };
 
-const codeUrl = ref("");
 const loading = ref(false);
 // 验证码开关
 const captchaEnabled = ref(true);
@@ -146,12 +160,7 @@ function getCookie() {
 getCookie();
 </script>
 
-<style lang='scss' scoped>
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
+<style  scoped>
 .login {
   display: flex;
   justify-content: center;
@@ -159,7 +168,8 @@ html, body {
   height: 100vh;
   width: 100vw;
   background-image: url("../assets/images/backimage.jpg");
-  background-size: auto;
+  background-size: cover;
+    background-repeat: no-repeat;
   background-position: center;
 }
 .title {
@@ -169,51 +179,36 @@ html, body {
 }
 
 .login-form {
-  border-radius: 6px;
-  background: #ffffff;
-
-  width: 400px;
-  padding: 25px 25px 5px 25px;
-  .el-input {
-    height: 40px;
-    input {
-      height: 40px;
-    }
-  }
-  .input-icon {
-    height: 39px;
-    width: 14px;
-  }
-}
-.login-tip {
-  font-size: 13px;
-  text-align: center;
-  color: #bfbfbf;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    width: 400px;
 }
 .login-code {
   width: 33%;
   height: 40px;
   float: right;
-  img {
-    cursor: pointer;
-    vertical-align: middle;
-  }
-}
-.el-login-footer {
-  height: 40px;
-  line-height: 40px;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-  color: #fff;
-  font-family: Arial;
-  font-size: 12px;
-  letter-spacing: 1px;
 }
 .login-code-img {
   height: 40px;
   width: 100px;
   padding-left: 12px;
+}
+.input-icon-wrapper {
+    display: flex;
+    align-items: center;
+}
+.custom-icon {
+    display: flex;
+    align-items: center;
+    color: #4a4a4a;
+    font-size: 20px;
+}
+.icon-divider {
+    width: 1px;
+    height: 24px;
+    background-color: #dcdfe6;
+    margin-left: 8px;
 }
 </style>

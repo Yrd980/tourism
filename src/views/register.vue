@@ -1,7 +1,7 @@
 <template>
   <div class="register">
     <el-form ref="registerRef" :model="registerForm" :rules="registerRules" class="register-form">
-      <h3 class="title">若依后台管理系统</h3>
+      <h3 class="title">游客服务系统</h3>
       <el-form-item prop="username">
         <el-input
           v-model="registerForm.username"
@@ -10,7 +10,12 @@
           auto-complete="off"
           placeholder="账号"
         >
-          <template #prefix><svg-icon icon-class="user" class="el-input__icon input-icon" /></template>
+            <template #prefix>
+                <div class="input-icon-wrapper">
+                    <el-icon class="custom-icon"><User /></el-icon>
+                    <div class="icon-divider"></div>
+                </div>
+            </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
@@ -22,7 +27,12 @@
           placeholder="密码"
           @keyup.enter="handleRegister"
         >
-          <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
+            <template #prefix>
+                <div class="input-icon-wrapper">
+                    <el-icon class="custom-icon"><Lock /></el-icon>
+                    <div class="icon-divider"></div>
+                </div>
+            </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="confirmPassword">
@@ -34,7 +44,12 @@
           placeholder="确认密码"
           @keyup.enter="handleRegister"
         >
-          <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
+            <template #prefix>
+                <div class="input-icon-wrapper">
+                    <el-icon class="custom-icon"><CircleCheck /></el-icon>
+                    <div class="icon-divider"></div>
+                </div>
+            </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="code" v-if="captchaEnabled">
@@ -46,10 +61,15 @@
           style="width: 63%"
           @keyup.enter="handleRegister"
         >
-          <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
+            <template #prefix>
+                <div class="input-icon-wrapper">
+                    <el-icon class="custom-icon"><CollectionTag /></el-icon>
+                    <div class="icon-divider"></div>
+                </div>
+            </template>
         </el-input>
         <div class="register-code">
-            <img src="../assets/images/img_1.png"  class="register-code-img"/>
+            <img src="../assets/images/codeimg01.png"  class="register-code-img"/>
         </div>
       </el-form-item>
       <el-form-item style="width:100%;">
@@ -68,10 +88,6 @@
         </div>
       </el-form-item>
     </el-form>
-    <!--  底部  -->
-    <div class="el-register-footer">
-      <span>Copyright © 2018-2024 ruoyi.vip All Rights Reserved.</span>
-    </div>
   </div>
 </template>
 
@@ -146,9 +162,11 @@ function handleRegister() {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  background-image: url("../assets/images/login-background.jpg");
+  height: 100vh;
+  width: 100vw;
+  background-image: url("../assets/images/registerback.jpg");
   background-size: cover;
+  background-repeat: no-repeat;
 }
 .title {
   margin: 0px auto 30px auto;
@@ -157,50 +175,36 @@ function handleRegister() {
 }
 
 .register-form {
-  border-radius: 6px;
-  background: #ffffff;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   width: 400px;
-  padding: 25px 25px 5px 25px;
-  .el-input {
-    height: 40px;
-    input {
-      height: 40px;
-    }
-  }
-  .input-icon {
-    height: 39px;
-    width: 14px;
-    margin-left: 0px;
-  }
-}
-.register-tip {
-  font-size: 13px;
-  text-align: center;
-  color: #bfbfbf;
 }
 .register-code {
   width: 33%;
   height: 40px;
   float: right;
-  img {
-    cursor: pointer;
-    vertical-align: middle;
-  }
-}
-.el-register-footer {
-  height: 40px;
-  line-height: 40px;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-  color: #fff;
-  font-family: Arial;
-  font-size: 12px;
-  letter-spacing: 1px;
 }
 .register-code-img {
   height: 40px;
+  width: 80px;
   padding-left: 12px;
+}
+.input-icon-wrapper {
+  display: flex;
+  align-items: center;
+}
+.custom-icon {
+  display: flex;
+  align-items: center;
+  color: #4a4a4a;
+  font-size: 20px;
+}
+.icon-divider {
+  width: 1px;
+  height: 24px;
+  background-color: #dcdfe6;
+  margin-left: 8px;
 }
 </style>
