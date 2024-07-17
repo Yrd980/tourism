@@ -12,7 +12,8 @@
     <el-tab-pane label="路线" name="route"></el-tab-pane>
     <el-tab-pane label="我的订单" name="order"></el-tab-pane>
     <el-tab-pane label="个人中心" name="profile"></el-tab-pane>
-    
+    <el-tab-pane label="发起投诉" name="complaint"></el-tab-pane>
+
   </el-tabs>
   <!--  <slide/>-->
 </template>
