@@ -23,12 +23,12 @@
                 id="search-spots-input"
                 class="user-search"
                 placeholder="搜索景点"/>
-            <el-button
-                id="search-spots"
-                @click="handleSearch"
-                :icon="Search"
-                circle
-            />
+            <!--            <el-button-->
+            <!--                id="search-spots"-->
+            <!--                @click="handleSearch"-->
+            <!--                :icon="Search"-->
+            <!--                circle-->
+            <!--            />-->
           </div>
         </div>
 
@@ -59,12 +59,11 @@
 
 <script setup>
 import {computed, ref} from 'vue'
-import {Search} from "@element-plus/icons-vue";
 import Top from "@/components/Top.vue";
 
 const searchInput = ref('')
 
-const items = ref( [
+const items = ref([
   {
     image: 'src/assets/images/home/image1_1.jpg',
     name: '武侯祠',
