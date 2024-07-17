@@ -61,6 +61,12 @@ export const constantRoutes = [
         hidden: true
     },
     {
+        name: 'complaint',
+        path: '/complaint',
+        component:() =>import('@/views/complaint'),
+        hidden: true
+    },
+    {
         path: '/guest/starhotels/details/:hotelId',
         component: () => import('@/views/hotel/starhotels/details'),
         hidden: true

@@ -109,7 +109,7 @@
                                 <el-input v-model="formattedTotalPrice" disabled></el-input>
                               </el-form-item>
                               <el-form-item>
-                                <img src="../../../assets/weChatcode/erweima.jpg" class="money-image"
+                                <img src="../../../assets/images/erweima.jpg" class="money-image"
                                      alt="Description of image">
                               </el-form-item>
                             </el-form>
@@ -427,13 +427,13 @@ function submitBookingMsg() {
   };
 
   addStarhotelBookingMsg(bookingData).then(response => {  // 调用接口添加预订信息
+    dialogVisible.value = false;  // 关闭预订弹窗
     ElMessage.success('预订成功'); // 弹出登录成功消息
+    setTimeout(() => {
+      // 将 hotelId 传递给路由，跳转到详情页面
+      proxy.$router.push(`/guest/starhotels`);
+    }, 1000);
   });
-  // 延迟一秒刷新页面
-  setTimeout(() => {
-    location.reload();
-  }, 1000);
-  dialogVisible.value = false;  // 关闭预订弹窗
 }
 
 // 时间快捷方式选项
