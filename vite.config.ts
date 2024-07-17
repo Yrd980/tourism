@@ -57,6 +57,12 @@ export default defineConfig({
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/hotel/, ''),
                 secure: false,
+            },
+            '/userinfo': {
+                target: 'http://localhost:9201/',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/userinfo/, ''),
+                secure: false,
             }
         },
     },

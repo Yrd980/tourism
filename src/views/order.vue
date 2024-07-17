@@ -15,8 +15,8 @@
             </div>
             <div>
               <el-table :data="bookingOrderDataView" height="250" style="width: 100%" stripe>
-                <el-table-column label="酒店id" align="center" prop="hotelId" />
-                <el-table-column label="房型id" align="center" prop="roomTypeId" />
+                <el-table-column label="酒店名称" align="center" prop="hotelName" />
+                <el-table-column label="房型名称" align="center" prop="roomTypeName" />
                 <el-table-column label="联系方式" align="center" prop="contactNumber" />
                 <el-table-column label="是否确认" align="center">
                   <template #default="scope">
@@ -52,8 +52,8 @@ const data = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    hotelId: null,
-    roomTypeId: null,
+    hotelName: null,
+    roomTypeName: null,
     guestId: null,
     recorded: null,
     guestName: null,
