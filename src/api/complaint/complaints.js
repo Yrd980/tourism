@@ -1,6 +1,8 @@
-import request from '@/utils/request'
+
 
 // 查询投诉处理列表
+import axios from "axios";
+
 export function listComplaints(query) {
   return request({
     url: '/complaint/complaints/list',
@@ -19,11 +21,16 @@ export function getComplaints(id) {
 
 // 新增投诉处理
 export function addComplaints(data) {
-  return request({
-    url: '/complaint/complaints',
-    method: 'post',
-    data: data
-  })
+  console.log(data)
+  return axios.post('/comp/complaints/complaintsGuest',data)
+      .then(response => {
+        console.log('响应数据:', response.data); // 打印响应数据
+        return response.data;
+      })
+      .catch(error => {
+        console.error('获取信息失败:', error);
+        throw error;
+      });
 }
 
 // 修改投诉处理
