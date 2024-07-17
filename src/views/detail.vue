@@ -456,6 +456,7 @@ const initMap = (mapInstance) => {
     map.addControl(navigation);
   })
 
+
 };
 
 const createSearch = (type, panel) => {
