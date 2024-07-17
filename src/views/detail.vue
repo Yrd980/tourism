@@ -1,4 +1,4 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
   <div class="tourism">
     <el-container>
       <el-header>
@@ -18,14 +18,12 @@
         <div class="container">
           <div class="left-side">
             <!-- 左边内容 -->
-            <h2>{{ scenic.name }}</h2>
-            <el-card v-for="(item, index) in scenic.images" :key="index" class="box-card">
-              <img :src="item" class="card-image" alt="Image">
-              <div style="padding: 12px;">
-                <div class="card-description">{{ item.description }}</div>
+            <el-card v-for="(item, index) in scenic" :key="index" class="box-card1">
+              <img :src="item.pic_url" class="card-image1" alt="Image">
+              <div>
+                <div class="card-description1">{{ item.desc }}</div>
               </div>
             </el-card>
-            <div>{{ scenic.description }}</div>
             <div class="reviews">
               <!-- 使用el-scrollbar实现点评列表滚动 -->
               <el-scrollbar style="margin-top: 40px" height="800px">
@@ -179,7 +177,7 @@
 import Top from "@/components/Top.vue";
 import {computed, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
-import routeUtil from "@/util/routeUtil.js";
+import {getScenicspotsByScenicAreaId} from "@/api/scenic/index.js";
 
 const activeName = ref('1')
 
@@ -242,23 +240,6 @@ const reviewList = ref([
   // ... 可以添加更多点评
 ]);
 
-
-const items = ref([
-  {
-    id: '1',
-    images: ['src/assets/images/home/image1_1.jpg', 'src/assets/images/home/image1_1.jpg'],
-    name: '武侯祠',
-    description: '此身抱薪，可付丹鼎，五十四年春秋昭炎汉长明。南征北伐，誓还旧都，二十四代王业不偏安一隅。'
-  },
-  {
-    id: '2',
-    images: 'src/assets/images/home/image2_1.jpg',
-    name: '文殊院',
-    description: '大片红墙，明星打卡地，感受都市里的寺庙祈福。'
-  },
-
-])
-
 // 评分颜色计算函数
 const ratingColor = (rating) => {
   if (rating >= 90) return '#00FF00'; // 绿色
@@ -270,9 +251,8 @@ const ratingColor = (rating) => {
 
 onMounted(async () => {
   let index = route.params.id
-  scenic.value = items.value[index]
-  const result  = await  routeUtil.getLocation('金堂龚家山赵家镇天星洞村19组1号')
-  console.log(result)
+  const res = await getScenicspotsByScenicAreaId(index)
+  scenic.value = res.data
 })
 
 </script>
@@ -393,6 +373,26 @@ a {
   white-space: normal; /* 允许文本换行 */
   overflow-wrap: break-word; /* 支持更现代的浏览器，允许在必要时换行 */
   word-break: break-all; /* 强制在长词或 URL 中的任意位置换行 */
+}
+
+.box-card1 {
+  transition: 0.3s;
+  width: 100%;
+  min-width: 220px;
+}
+
+.card-image1 {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.card-description1 {
+  text-align: center;
+  /* 当内容超出最大高度时显示滚动条 */
+  overflow: auto;
+  color: #666;
+  margin-top: 10px;
 }
 
 

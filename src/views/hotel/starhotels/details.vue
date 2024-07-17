@@ -28,66 +28,6 @@
         </div>
       </div>
     </div>
-    <el-dialog v-model="dialogTableVisible" :visible.sync="dialogTableVisible" :key="dialogKey" title="地图"
-               width="2000px" :before-close="handleClose">
-      <div class="map-detail-container">
-        <div class="map-container">
-          <el-amap
-              :center="selectPos"
-              :zoom="zoom"
-              @init="initMap"
-          >
-            <el-amap-control-map-type :visible="visible"/>
-          </el-amap>
-        </div>
-        <div class="detail-container">
-          <el-tabs v-model="chooseTab" type="card" stretch>
-            <!-- 当前天气 -->
-            <el-tab-pane name="weather" label="当前天气">
-              <div id="weatherContainer">
-                <div id="currentWeather">
-                  <h2>当前天气</h2>
-                  <p><strong>天气状况：</strong>{{ currentWeather.weather }}</p>
-                  <p><strong>温度：</strong>{{ currentWeather.temperature }}°C</p>
-                  <p><strong>风向：</strong>{{ currentWeather.windDirection }}</p>
-                  <p><strong>风力：</strong>{{ currentWeather.windPower }}</p>
-                  <p><strong>湿度：</strong>{{ currentWeather.humidity }}%</p>
-                </div>
-                <div id="forecastWeather">
-                  <h2>天气预报</h2>
-                  <ul id="forecastList">
-                    <li v-for="(forecast, index) in forecasts" :key="index">
-                      <p>日期: {{ forecast.date }}
-                        白天: {{ forecast.dayWeather }}, {{ forecast.dayTemp }}°C, {{ forecast.dayWindDir }}风
-                        {{ forecast.dayWindPower }}级
-                        夜间: {{ forecast.nightWeather }}, {{ forecast.nightTemp }}°C, {{ forecast.nightWindDir }}风
-                        {{ forecast.nightWindPower }}级
-                      </p>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </el-tab-pane>
-
-            <!-- 景点 -->
-            <el-tab-pane name="scenic" label="景点">
-              <div id="panel1"></div>
-              <div id="panel"></div>
-            </el-tab-pane>
-
-            <!-- 美食 -->
-            <el-tab-pane name="food" label="美食">
-              <div id="panel2"></div>
-            </el-tab-pane>
-
-            <!-- 附近的旅店 -->
-            <el-tab-pane name="hotel" label="住宿">
-              <div id="panel3"></div>
-            </el-tab-pane>
-          </el-tabs>
-        </div>
-      </div>
-    </el-dialog>
     <div class="select">
       <div class="head">
         <!-- 使用el-tabs组件实现选项卡切换 -->
@@ -241,6 +181,72 @@
       </div>
     </div>
   </div>
+  <el-dialog v-model="dialogTableVisible"
+             :visible.sync="dialogTableVisible"
+             :key="dialogKey" title="地图"
+             style="width: 1000px"
+             :before-close="handleClose">
+    <div class="map-detail-container">
+      <div class="map-container">
+        <el-amap
+            :center="selectPos"
+            :zoom="zoom"
+            @init="initMap"
+        >
+          <el-amap-control-map-type :visible="visible"/>
+          <el-amap-marker
+              :position="selectPos"
+          />
+        </el-amap>
+      </div>
+      <div class="detail-container">
+        <el-tabs v-model="chooseTab" type="card" stretch>
+          <!-- 当前天气 -->
+          <el-tab-pane name="weather" label="当前天气">
+            <div id="weatherContainer">
+              <div id="currentWeather">
+                <h2>当前天气</h2>
+                <p><strong>天气状况：</strong>{{ currentWeather.weather }}</p>
+                <p><strong>温度：</strong>{{ currentWeather.temperature }}°C</p>
+                <p><strong>风向：</strong>{{ currentWeather.windDirection }}</p>
+                <p><strong>风力：</strong>{{ currentWeather.windPower }}</p>
+                <p><strong>湿度：</strong>{{ currentWeather.humidity }}%</p>
+              </div>
+              <div id="forecastWeather">
+                <h2>天气预报</h2>
+                <ul id="forecastList">
+                  <li v-for="(forecast, index) in forecasts" :key="index">
+                    <p>日期: {{ forecast.date }}
+                      白天: {{ forecast.dayWeather }}, {{ forecast.dayTemp }}°C, {{ forecast.dayWindDir }}风
+                      {{ forecast.dayWindPower }}级
+                      夜间: {{ forecast.nightWeather }}, {{ forecast.nightTemp }}°C, {{ forecast.nightWindDir }}风
+                      {{ forecast.nightWindPower }}级
+                    </p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </el-tab-pane>
+
+          <!-- 景点 -->
+          <el-tab-pane name="scenic" label="景点">
+            <div id="panel1"></div>
+            <div id="panel"></div>
+          </el-tab-pane>
+
+          <!-- 美食 -->
+          <el-tab-pane name="food" label="美食">
+            <div id="panel2"></div>
+          </el-tab-pane>
+
+          <!-- 附近的旅店 -->
+          <el-tab-pane name="hotel" label="住宿">
+            <div id="panel3"></div>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </div>
+  </el-dialog>
 </template>
 
 <script setup>
@@ -646,6 +652,7 @@ onBeforeMount(() => {
 </script>
 
 <style scoped>
+@import "src/assets/styles/css/style.css";
 
 .block {
   width: 50%;
@@ -927,5 +934,4 @@ a {
   height: 500px;
 }
 
-@import "@/assets/styles/css/style.css";
 </style>

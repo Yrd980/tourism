@@ -63,7 +63,6 @@ export default defineConfig({
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/userinfo/, ''),
                 secure: false,
-            }
             },
             '/scenic': {
                 target: 'http://localhost:9215/',
@@ -78,5 +77,5 @@ export default defineConfig({
                 secure: false,
             },
         },
-    },
+    }
 })

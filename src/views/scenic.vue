@@ -36,12 +36,12 @@
           <el-row :gutter="8">
             <el-col v-for="(item, index) in filteredItems" :key="index" :span="6" v-memo="[item]">
               <el-card class="box-card">
-                <img :src="item.image" class="card-image" alt="Image">
+                <img :src="item.pic_url" class="card-image" alt="Image">
                 <div style="padding: 12px;">
                   <span class="card-name">{{ item.name }}</span>
-                  <div class="card-description">{{ item.description }}</div>
+                  <div class="card-description">{{ item.desc }}</div>
                   <router-link
-                      :to="{ name: 'detail', params: { id: index }}"
+                      :to="{ name: 'detail', params: { id: item.id }}"
                   >
                     查看详情
                   </router-link>
@@ -60,49 +60,10 @@
 <script setup>
 import {computed, onMounted, ref} from 'vue'
 import Top from "@/components/Top.vue";
-import {getAllScenicareas, getScenicspotsByScenicAreaId} from "@/api/scenic/index.js";
+import {getAllScenicareas} from "@/api/scenic/index.js";
 
 const searchInput = ref('')
-
-const items = ref([
-  {
-    image: 'src/assets/images/home/image1_1.jpg',
-    name: '武侯祠',
-    description: '此身抱薪，可付丹鼎，五十四年春秋昭炎汉长明。南征北伐，誓还旧都，二十四代王业不偏安一隅。'
-  },
-  {
-    image: 'src/assets/images/home/image2_1.jpg',
-    name: '文殊院',
-    description: '大片红墙，明星打卡地，感受都市里的寺庙祈福。'
-  },
-  {image: 'src/assets/images/home/image3_1.jpg', name: '杜甫草堂', description: '杜甫诗人的故居，清幽秀丽的诗意景象'},
-  {
-    image: 'src/assets/images/home/image4_1.jpg',
-    name: '东郊记忆',
-    description: '工业风建筑拍照嘎嘎出片，周末会有很多特色主题的集市。'
-  },
-  {
-    image: 'src/assets/images/home/image5_1.jpg',
-    name: '大熊猫基地',
-    description: '都来成都了真的不去大熊猫基地看看吗。'
-  },
-  {
-    image: 'src/assets/images/home/image6_1.jpg',
-    name: '都江堰',
-    description: '千年古堰，天府之源。晚上灯光映水，欣赏南桥夜景。'
-  },
-  {
-    image: 'src/assets/images/home/image7_1.jpg',
-    name: '青城山',
-    description: '拜水都江堰，问道青城山。青城山是西蜀第一山，是孙悟空拜师的取景地，还可以了解道教和太极的发源。'
-  },
-  {
-    image: 'src/assets/images/home/image8_1.jpg',
-    name: '三星堆',
-    description: '一场跨越时空的对话，亲身感受历史带来的震撼'
-  },
-
-])
+const items = ref([])
 
 // 计算属性，根据搜索关键词过滤景点
 const filteredItems = computed(() => {
@@ -112,20 +73,14 @@ const filteredItems = computed(() => {
   }
   return items.value.filter(item =>
       item.name.includes(searchInput.value) ||
-      item.description.includes(searchInput.value)
+      item.desc.includes(searchInput.value)
   )
 })
 
-const handleSearch = () => {
-  // 可以在这里处理点击搜索按钮后的逻辑，如果需要
-}
 
 onMounted(async () => {
-  const result = await getAllScenicareas()
-  console.log('scenic')
-  const result1 = await getScenicspotsByScenicAreaId(1)
-  console.log(result1)
-  console.log(result)
+  const res = await getAllScenicareas()
+  items.value = res.data
 })
 
 </script>
