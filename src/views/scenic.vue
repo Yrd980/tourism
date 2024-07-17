@@ -58,8 +58,9 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import Top from "@/components/Top.vue";
+import {getAllScenicareas, getScenicspotsByScenicAreaId} from "@/api/scenic/index.js";
 
 const searchInput = ref('')
 
@@ -119,6 +120,13 @@ const handleSearch = () => {
   // 可以在这里处理点击搜索按钮后的逻辑，如果需要
 }
 
+onMounted(async () => {
+  const result = await getAllScenicareas()
+  console.log('scenic')
+  const result1 = await getScenicspotsByScenicAreaId(1)
+  console.log(result1)
+  console.log(result)
+})
 
 </script>
 

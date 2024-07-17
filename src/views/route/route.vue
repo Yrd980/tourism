@@ -20,7 +20,7 @@
       </div>
     </div>
     <el-dialog v-model="dialogTableVisible" :visible.sync="dialogTableVisible" :key="dialogKey" title="地图"
-               width="1280">
+               width="1280" :before-close="handleClose">
       <div class="map-detail-container">
         <div class="map-container">
           <el-amap
@@ -85,35 +85,6 @@
               </div>
             </el-tab-pane>
 
-            <!-- 交通 -->
-            <el-tab-pane name="traffic" label="交通">
-              <!-- 目的地输入框 -->
-              <el-input v-model="start" placeholder="请输入起点" class="input-field"/>
-
-              <!-- 途径点输入框 -->
-              <div v-for="(waypoint, index) in waypoints" :key="index" class="waypoint-row">
-                <el-input
-                    v-model="waypoints[index]"
-                    placeholder="请输入途径点"
-                    class="input-field"
-                />
-                <el-button type="danger" :icon="Delete" class="delBut" size="small"  @click="removeWaypoint(index)"  circle/>
-              </div>
-
-              <!-- 添加途径点按钮 -->
-              <el-button type="text" icon="el-icon-plus" @click="addWaypoint">添加途径点</el-button>
-
-              <!-- 终点输入框 -->
-              <el-input v-model="destination" placeholder="请输入终点" class="input-field"/>
-
-              <!-- 提交导航按钮 -->
-              <el-button type="primary" @click="submitNavigation">导航</el-button>
-              <el-button type="primary" @click="switchNav">取消</el-button>
-              <!-- 交通信息展示代码 -->
-              <div v-if="nav" id="navigation"></div>
-
-            </el-tab-pane>
-
             <!-- 地址 -->
             <el-tab-pane name="addressTab" v-if="visible" label="地址">
               <div id="panel"></div>
@@ -149,12 +120,11 @@ import {initMapApi} from "@/util/map.js";
 import {attractionData} from "@/views/route/data.js";
 import Top from "@/components/Top.vue";
 import Footer from "@/components/Footer.vue";
-import {Delete} from "@element-plus/icons-vue";
+import {ElMessageBox} from "element-plus";
 
 // 地图属性
 const zoom = ref(16)
 const center = ref([])
-const markers = ref([]) //存放标记
 const attractions = ref(attractionData); //临时
 
 //函数变量
@@ -165,10 +135,6 @@ const selectPos = ref([]) //当前位置
 const recoveryPos = ref([]) //存储先前的位置
 const keyword = ref(''); //搜索关键字
 const inputValue = ref(null) //使用el-input的expose
-const start = ref('')
-const destination = ref('') // 目的地
-const waypoints = ref([]) // 途径点数
-
 
 const form = ref({
   city: '',
@@ -192,7 +158,6 @@ let poiInfo //搜索的信息
 
 //以下为插件名
 let geocoder = null //位置
-let driving = null //驾车
 let placeSearch = null //搜索
 
 //设置可见
@@ -206,13 +171,17 @@ const switchVisible = () => {
   visible.value = !visible.value;
   transport(recoveryPos.value[0], recoveryPos.value[1])
 }
-const nav = ref(false) // 设置导航
-const switchNav = () => {
-  transport(recoveryPos.value[0], recoveryPos.value[1])
-  nav.value = !nav.value;
-  waypoints.value = []
-  start.value = ''
-  destination.value = ''
+
+const handleClose = () => {
+  inputValue.value.clear()
+  ElMessageBox.confirm('确认关闭地图吗')
+      .then(() => {
+        dialogTableVisible.value = !dialogTableVisible.value
+        done()
+      })
+      .catch(() => {
+        // catch error
+      })
 }
 
 // 获得地图变量使用插件
@@ -240,20 +209,7 @@ const initMap = (mapInstance) => {
     let lng = poiInfo[0];
     let lat = poiInfo[1];
     transport(lng, lat);
-    // inputValue.value.clear();
   })
-
-  AMap.plugin("AMap.Driving", () => {
-    let drivingOptions = {
-      map: map,
-      panel: "navigation",
-      //驾车策略，包括 LEAST_TIME，LEAST_FEE, LEAST_DISTANCE,REAL_TRAFFIC
-      policy: AMap.DrivingPolicy.LEAST_TIME,
-    };
-
-    driving = new AMap.Driving(drivingOptions);
-    //根据起终点坐标规划驾车路线
-  });
 
   //放大缩小
   map.plugin('AMap.ToolBar', () => {
@@ -272,60 +228,19 @@ const initMap = (mapInstance) => {
     });
     map.addControl(navigation);
   })
-  // transport(location.value.longitude, location.value.latitude)
   transport(selectPos.value[0], selectPos.value[1])
 };
 
 // 点击展示地图
-const showMap = (lng, lat) => {
+const showMap = async (lng, lat) => {
   dialogKey++
   dialogTableVisible.value = true
   //  方便初始化定位
   selectPos.value = [lng, lat]
   recoveryPos.value = selectPos.value //初始化
-  drawMarker(lng, lat)
-  //关闭搜索
-  inputValue.value.clear()
   switchVisible()
   chooseTab.value = "weather"
 }
-
-// 添加途径点输入框
-const addWaypoint = () => {
-  waypoints.value.push('');
-}
-
-// 移除途径点输入框
-const removeWaypoint = (index) => {
-  waypoints.value.splice(index, 1);
-}
-
-const submitNavigation = async (way) => {
-  way = driving
-  let origin = await getLanAndLong(start.value);
-  let target = await getLanAndLong(destination.value);
-  if (waypoints.value.length > 0) {
-    let opts = [];
-    for (const waypoint of waypoints.value) {
-      let pos = await getLanAndLong(waypoint);
-      opts.push(new AMap.LngLat(pos));
-    }
-    way.search(origin, target, opts, (status, result) => {
-      if (status === 'complement') {
-        console.log(result.info)
-        console.log(result.routes)
-      }
-    });
-  } else {
-    way.search(origin, target, (status, result) => {
-      if (status === 'complement') {
-        console.log(result.info)
-        console.log(result.routes)
-      }
-    });
-  }
-};
-
 
 const createSearch = (type, panel) => {
   return new AMap.PlaceSearch({
@@ -365,28 +280,6 @@ const initTab = () => {
   }
 }
 
-//点击地图添加点
-const clickMap = async e => {
-  if (click.value === false) return
-  const {lng, lat} = e.lnglat;
-  const newMarker = new AMap.Marker({
-    position: new AMap.LngLat(lng, lat),
-    anchor: 'bottom-center'
-  });
-  map.add(newMarker);
-  markers.value.push(newMarker);
-}
-
-// 绘制地点marker
-const drawMarker = (longitude, latitude) => {
-  let marker = new AMap.Marker({
-    position: new AMap.LngLat(longitude, latitude),
-    anchor: 'bottom-center',
-  });
-  markers.value.push(marker);
-  map.add(marker);
-}
-
 // 跳转
 const transport = async (lng, lat) => {
   const res = await RouteUtil.getPosition(lng, lat)
@@ -398,11 +291,9 @@ const transport = async (lng, lat) => {
   currentWeather.value = weatherData[0];
   // 提取天气预报
   forecasts.value = weatherData[1].forecasts;
-  drawMarker(lng, lat)
   initTab()
   map.setZoomAndCenter(zoom.value, selectPos.value);
 }
-
 
 //加快初始化
 onBeforeMount(() => {
@@ -467,41 +358,6 @@ onBeforeMount(() => {
 #panel3 {
   width: 400px;
   height: 500px;
-}
-
-#navigation {
-  background-color: white;
-  top: 10px;
-  right: 10px;
-  width: 400px;
-}
-
-.route-input-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.input-field {
-  margin-bottom: 10px;
-}
-
-.waypoint-row {
-  display: flex;
-  align-items: center;
-}
-
-.waypoint-row .el-input {
-  flex-grow: 1;
-  margin-right: 10px;
-}
-
-.el-button--text {
-  padding: 0;
-}
-
-.delBut {
-  transform: scale(0.85) translateY(-8px);
 }
 
 </style>

@@ -46,6 +46,27 @@ function getGeolocation() {
 
 const keyService = mapConfig.key_service
 
+const skyUrl = "/pos/geocoder";
+
+//获取经纬度
+const getLocation = async (address) => {
+    const apiKey = mapConfig.key_sky; // 替换为您的API密钥
+    const ds = JSON.stringify({keyWord: address});
+    const url = `${skyUrl}?ds=${ds}&tk=${apiKey}`;
+
+    try {
+        const response = await myAxios.get(url);
+        console.log(response)
+        if (response.status !== "0") {
+            throw new Error(`API error! status: ${response.data.status}, msg:${response.data.msg}`);
+        }
+        return [response.location.lon, response.location.lat];
+    } catch (error) {
+        console.error("Failed to get location:", error);
+        return null; // 或者抛出错误，取决于你的错误处理策略
+    }
+};
+
 //地图
 const url = `/map/v3/geocode/regeo` //防止跨域
 
@@ -68,8 +89,6 @@ async function getPosition(lng, lat) {
             } else if (Array.isArray(city)) {
                 city = city[0];
             }
-
-            console.log('suss' + res.regeocode)
 
             return {
                 address: formatted_address,
@@ -108,8 +127,9 @@ function getLocByPoi(poiInfo) {
     }
 }
 
+
 export default {
     getWeather, getCity, getGeolocation, getPosition, isValidLongitude,
-    getLocByPoi
+    getLocByPoi, getLocation
 }
 

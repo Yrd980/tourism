@@ -35,7 +35,7 @@ export default defineConfig({
         proxy: {
             '/api': {
                 // target: 'https://restapi.amap.com',
-                target: 'http://localhost:9208/',
+                target: 'http://localhost:9215/',
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/api/, ''),
                 secure: false,
@@ -57,7 +57,19 @@ export default defineConfig({
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/hotel/, ''),
                 secure: false,
-            }
+            },
+            '/scenic': {
+                target: 'http://localhost:9215/',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/senic/, ''),
+                secure: false,
+            },
+            '/pos': {
+                target: 'http://api.tianditu.gov.cn',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/pos/, ''),
+                secure: false,
+            },
         },
     },
 })
