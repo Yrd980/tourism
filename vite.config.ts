@@ -76,6 +76,12 @@ export default defineConfig({
                 rewrite: (path) => path.replace(/^\/pos/, ''),
                 secure: false,
             },
+            '/comp': {
+                target: 'http://localhost:9209/',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/comp/, ''),
+                secure: false,
+            }
         },
     }
 })

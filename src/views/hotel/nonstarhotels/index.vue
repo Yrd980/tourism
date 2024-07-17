@@ -5,6 +5,12 @@
                 <Top/>
             </el-header>
             <el-main>
+                <div class="subheader">
+                    <div class="left">
+                        <span class="page-title">度假村民宿</span>
+                        <span class="page-desc">民宿寄情，乡野间，绿意盎然。</span>
+                    </div>
+                </div>
                 <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
                     <el-form-item label="酒店名" prop="name">
                         <el-input
@@ -51,6 +57,7 @@
     </div>
 </template>
 <style scoped>
+@import "@/assets/styles/css/style.css";
 .hotel-cards {
     margin-top: 20px;
 }

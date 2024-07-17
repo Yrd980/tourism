@@ -8,7 +8,17 @@
         <slide style="margin-bottom: 40px"/>
         <div id="wrapper">
           <div id="container">
-            <div id="content" style="margin-bottom: 250px">
+            <section id="content">
+
+              <!--newsletter -->
+
+              <div class="emergency">
+                <el-table :data="emergencyinfoListView" border :default-sort="{ prop: 'priority', order: 'descending' }"
+                          :header-cell-style="{backgroundColor: '#fdf6ec'}">
+                  <el-table-column prop="content" label="应急信息预警" width="200"></el-table-column>
+                  <el-table-column prop="priority" label="应急信息预警" width="200" v-id="false"></el-table-column>
+                </el-table>
+              </div>
 
               <div class="hr">
                 <hr/>
@@ -42,21 +52,22 @@
                 <router-link style="float: right" to="/recommend">查看目的地</router-link>
               </div>
 
-              <div class="card-container" style="transform: translateX(-10px) ; max-height: 600px">
+              <div class="card-container" style="transform: translateX(-10px)">
                 <el-row :gutter="8">
                   <el-col v-for="(item, index) in items" :key="index" :span="6">
                     <el-card class="box-card">
-                      <img :src="item.pic_url" class="card-image" alt="Image">
+                      <img :src="item.image" class="card-image" alt="Image">
                       <div style="padding: 12px;">
                         <span class="card-name">{{ item.name }}</span>
-                        <div class="card-description">{{ item.desc }}</div>
+                        <div class="card-description">{{ item.description }}</div>
                       </div>
                     </el-card>
                   </el-col>
                 </el-row>
               </div>
 
-            </div>
+              <br class="clear"/>
+            </section>
           </div>
         </div>
         <Footer/>
@@ -71,22 +82,87 @@ import Top from "@/components/Top.vue";
 import Footer from "@/components/Footer.vue";
 import Slide from "@/layout/components/slide.vue";
 import useUserStore from '@/store/modules/user'
-import {onMounted, ref} from 'vue'
-import {getAllScenicareas} from "@/api/scenic/index.js";
-
+import {reactive, ref, toRefs} from 'vue'
+import {listEmergencyinfo} from "@/api/emergency/emergency.js";
+const emergencyinfoList = ref([]);
+const emergencyinfoListView = ref([]);
 const userStore = useUserStore();
 const size = ref('default')
-const items = ref([])
-
-onMounted(async () => {
-  const res = await getAllScenicareas()
-  items.value = res.data
+const labelPosition = ref('right')
+const loading = ref(true);  // 控制加载状态
+const total = ref(0);  // 总条目数
+const data = reactive({
+  form: {},
+  queryParams: {
+    pageNum: 1,
+    pageSize: 10,
+    content: null,
+  },
+});
+const sizeForm = reactive({
+  name: '',
+  region: '',
+  date1: '',
+  date2: '',
+  delivery: false,
+  type: [],
+  resource: '',
+  desc: '',
 })
+const { queryParams, form } = toRefs(data);
+const items = [
+  {image: 'src/assets/images/uploads/1280x800/login-background.jpg', name: 'Name 1', description: 'Description 1'},
+  {image: 'https://via.placeholder.com/150', name: 'Name 2', description: 'Description 2'},
+  {image: 'https://via.placeholder.com/150', name: 'Name 3', description: 'Description 3'},
+  {image: 'https://via.placeholder.com/150', name: 'Name 4', description: 'Description 4'},
+  {image: 'https://via.placeholder.com/150', name: 'Name 5', description: 'Description 5'},
+  {image: 'https://via.placeholder.com/150', name: 'Name 6', description: 'Description 6'},
+  {image: 'https://via.placeholder.com/150', name: 'Name 7', description: 'Description 7'},
+  {image: 'https://via.placeholder.com/150', name: 'Name 8', description: 'Description 8'},
 
+]
+
+function onSubmit() {
+  console.log('submit!')
+}
+
+function getList() {
+  loading.value = true;  // 设置加载状态
+  listEmergencyinfo(queryParams.value).then(response => {
+    const currentTime = new Date();  // 获取当前时间的 Date 对象
+    emergencyinfoList.value = response.rows;
+    emergencyinfoListView.value = response.rows.filter(item => {
+      const validityTime = new Date(item.validity);  // 将 validity 转换为 Date 对象
+      return item.status === 1 && validityTime > currentTime;
+    });
+    total.value = response.total;
+    loading.value = false;
+  });
+}
+
+
+getList();
 </script>
 
 
 <style scoped>
 @import "src/assets/styles/css/style.css";
 
+.form_btn {
+  display: flex;
+  justify-content: space-between; /* 按钮之间留有空间 */
+  align-items: center; /* 垂直居中对齐 */
+}
+
+.el-button {
+  float: right;
+  margin-right: 10px; /* 按钮之间的间距 */
+}
+
+.emergency {
+  width: 200px;
+  position: absolute;
+  top: 20px;
+  right: -220px;
+}
 </style>
