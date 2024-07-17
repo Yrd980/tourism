@@ -13,7 +13,7 @@
         <div class="attraction-info">
           <h3>{{ attraction.name }}</h3>
           <p>{{ attraction.description }}</p>
-          <el-button plain @click="showMap(attraction.position[0],attraction.position[1])">
+          <el-button plain @click="showMap(104.0547155875603,30.652099893495052)">
             查看
           </el-button>
         </div>
@@ -24,12 +24,25 @@
       <div class="map-detail-container">
         <div class="map-container">
           <el-amap
-              :center="selectPos"
+              :center="[104.0547155875603,30.6520998934950525]"
               :zoom="zoom"
               @init="initMap"
-              @click="clickMap"
           >
             <el-amap-control-map-type :visible="visible"/>
+            <el-amap-polyline
+                :path="polylinePath"
+                :stroke-color="polylineColor"
+                :stroke-style="polylineStyle"
+                :stroke-opacity="polylineOpacity"
+                :stroke-weight="polylineWeight"
+            />
+            <el-amap-marker
+                v-for="(marker, index) in markers"
+                :key="index"
+                :position="marker.position"
+                :content="marker.content"
+                :offset="marker.offset"
+            />
           </el-amap>
         </div>
         <div class="detail-container">
@@ -52,9 +65,6 @@
           <div class="toolbar">
             <button @click="switchVisible()">
               {{ visible ? '隐藏搜索' : '显示搜索' }}
-            </button>
-            <button @click="switchClick()">
-              {{ click ? '取消设置点' : '设置点' }}
             </button>
           </div>
           <el-tabs v-model="chooseTab" type="card" stretch>
@@ -113,17 +123,49 @@
 </template>
 
 <script setup lang="js">
-import {onBeforeMount, ref} from 'vue';
+import {onBeforeMount, onMounted, ref} from 'vue';
 import {ElAmap} from "@vuemap/vue-amap";
-import RouteUtil from "@/util/routeUtil.js";
-import {initMapApi} from "@/util/map.js";
-import {attractionData} from "@/views/route/data.js";
 import Top from "@/components/Top.vue";
 import Footer from "@/components/Footer.vue";
+import {getScenicspotsByScenicAreaId} from "@/api/scenic/index.js";
+import {initMapApi} from "@/util/map.js";
+import {attractionData} from "@/views/route/data.js";
+import RouteUtil from "@/util/routeUtil.js";
 import {ElMessageBox} from "element-plus";
 
+const list = ref([])
+let polylinePath // 路线坐标
+const polylineColor = '#3366FF'
+const polylineStyle = 'solid'
+const polylineOpacity = 1
+const polylineWeight = 6
+let markers = ref()
+onMounted(async () => {
+  const res = await getScenicspotsByScenicAreaId(1)
+  // 使用map函数批量处理每个地址对象
+  list.value = res.data.map(item => {
+    const positionArray = item.address.split(',').map(Number);
+    return {
+      ...item, // 展开原始对象
+      position: positionArray // 添加新的position属性
+    };
+  });
+  polylinePath = list.value.map(p => p.position)// 路线坐标
+  markers.value = list.value.map((p, index) => ({
+    position: p.position,
+    content: `
+      <div class="marker">
+        <div class="marker-index">${index + 1}</div>
+        <span class="marker-desc">${p.desc}</span>
+      </div>
+    `,
+    offset: [-20, -20]
+  }));
+})
+
+
 // 地图属性
-const zoom = ref(16)
+const zoom = ref(18)
 const center = ref([])
 const attractions = ref(attractionData); //临时
 
@@ -171,6 +213,7 @@ const switchVisible = () => {
   visible.value = !visible.value;
   transport(recoveryPos.value[0], recoveryPos.value[1])
 }
+
 
 const handleClose = () => {
   inputValue.value.clear()
@@ -228,7 +271,7 @@ const initMap = (mapInstance) => {
     });
     map.addControl(navigation);
   })
-  transport(selectPos.value[0], selectPos.value[1])
+  // transport(selectPos.value[0], selectPos.value[1])
 };
 
 // 点击展示地图
@@ -358,6 +401,42 @@ onBeforeMount(() => {
 #panel3 {
   width: 400px;
   height: 500px;
+}
+
+.marker {
+  display: flex; /* 使用flex布局 */
+  flex-direction: row; /* 水平排列子元素 */
+  align-items: center; /* 垂直居中对齐 */
+  justify-content: center; /* 水平居中对齐 */
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.marker-index,
+.marker-desc,
+.marker-id {
+  margin: 0 5px; /* 只设置左右间距 */
+  text-align: center; /* 文本居中 */
+  white-space: nowrap; /* 防止内容换行 */
+}
+
+.marker-index {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.marker-desc {
+  color: red;
+  font-size: 14px;
+}
+
+.marker-id {
+  font-size: 12px;
+  color: #666;
 }
 
 </style>
