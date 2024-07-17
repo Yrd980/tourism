@@ -179,6 +179,7 @@
 import Top from "@/components/Top.vue";
 import {computed, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
+import routeUtil from "@/util/routeUtil.js";
 
 const activeName = ref('1')
 
@@ -267,9 +268,11 @@ const ratingColor = (rating) => {
   return '#FF0000'; // 红色
 };
 
-onMounted(() => {
+onMounted(async () => {
   let index = route.params.id
   scenic.value = items.value[index]
+  const result  = await  routeUtil.getLocation('金堂龚家山赵家镇天星洞村19组1号')
+  console.log(result)
 })
 
 </script>
@@ -391,4 +394,6 @@ a {
   overflow-wrap: break-word; /* 支持更现代的浏览器，允许在必要时换行 */
   word-break: break-all; /* 强制在长词或 URL 中的任意位置换行 */
 }
+
+
 </style>

@@ -64,6 +64,19 @@ export default defineConfig({
                 rewrite: (path) => path.replace(/^\/userinfo/, ''),
                 secure: false,
             }
+            },
+            '/scenic': {
+                target: 'http://localhost:9215/',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/senic/, ''),
+                secure: false,
+            },
+            '/pos': {
+                target: 'http://api.tianditu.gov.cn',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/pos/, ''),
+                secure: false,
+            },
         },
     },
 })
