@@ -138,7 +138,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted, getCurrentInstance, computed, watch} from 'vue';
+import {ref, onMounted, getCurrentInstance, computed, watch, defineProps} from 'vue';
 import { useRoute } from 'vue-router';
 import {getNonstarhotel, addNonstarhotelBookingMsg} from '@/api/hotel/nonstarhotels';
 import useUserStore from '@/store/modules/user'

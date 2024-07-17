@@ -182,7 +182,7 @@
 </template>
 
 <script setup>
-import {computed, getCurrentInstance, onMounted, ref, watch} from 'vue';
+import {computed, getCurrentInstance, onMounted, ref, watch, defineProps} from 'vue';
 import {useRoute} from 'vue-router';
 import {addStarhotelBookingMsg, getStarhotel} from '@/api/hotel/starhotels';
 import useUserStore from '@/store/modules/user'
