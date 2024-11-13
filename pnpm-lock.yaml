@@ -88,8 +88,8 @@ importers:
         specifier: ^5.0.5
         version: 5.0.5(vite@5.3.1(@types/node@20.14.10)(sass@1.77.6))(vue@3.4.29(typescript@5.2.2))
       happy-dom:
-        specifier: ^14.12.3
-        version: 14.12.3
+        specifier: ^15.10.2
+        version: 15.10.2
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -98,7 +98,7 @@ importers:
         version: 5.3.1(@types/node@20.14.10)(sass@1.77.6)
       vitest:
         specifier: ^2.0.2
-        version: 2.0.2(@types/node@20.14.10)(happy-dom@14.12.3)(sass@1.77.6)
+        version: 2.0.2(@types/node@20.14.10)(happy-dom@15.10.2)(sass@1.77.6)
       vue-tsc:
         specifier: ^2.0.21
         version: 2.0.21(typescript@5.2.2)
@@ -985,9 +985,9 @@ packages:
   gopd@1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
 
-  happy-dom@14.12.3:
-    resolution: {integrity: sha512-vsYlEs3E9gLwA1Hp+w3qzu+RUDFf4VTT8cyKqVICoZ2k7WM++Qyd2LwzyTi5bqMJFiIC/vNpTDYuxdreENRK/g==}
-    engines: {node: '>=16.0.0'}
+  happy-dom@15.10.2:
+    resolution: {integrity: sha512-NbA5XrSovenJIIcfixCREX3ZnV7yHP4phhbfuxxf4CPn+LZpz/jIM9EqJ2DrPwgVDSMoAKH3pZwQvkbsSiCrUw==}
+    engines: {node: '>=18.0.0'}
 
   has-bigints@1.0.2:
     resolution: {integrity: sha512-tSvCKtBr9lkF0Ex0aQiP9N+OpV4zi2r/Nee5VkRDbaqv35RLYMzbwQfFSZZH0kR+Rd6302UJZ2p/bJCEoR3VoQ==}
@@ -2613,7 +2613,7 @@ snapshots:
     dependencies:
       get-intrinsic: 1.2.4
 
-  happy-dom@14.12.3:
+  happy-dom@15.10.2:
     dependencies:
       entities: 4.5.0
       webidl-conversions: 7.0.0
@@ -3169,7 +3169,7 @@ snapshots:
       fsevents: 2.3.3
       sass: 1.77.6
 
-  vitest@2.0.2(@types/node@20.14.10)(happy-dom@14.12.3)(sass@1.77.6):
+  vitest@2.0.2(@types/node@20.14.10)(happy-dom@15.10.2)(sass@1.77.6):
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@vitest/expect': 2.0.2
@@ -3192,7 +3192,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 20.14.10
-      happy-dom: 14.12.3
+      happy-dom: 15.10.2
     transitivePeerDependencies:
       - less
       - lightningcss
